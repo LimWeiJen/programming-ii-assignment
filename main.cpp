@@ -66,16 +66,15 @@ int main()
 void handleFacilityManager(DataManager& dataManager)
 {
 	cout << "\n--- Facility Manager Sign In ---\n";
-	cout << "(Default login: admin@campus.edu / admin123)\n";
 	string email, password;
 	cout << "Enter Email: ";
 	cin >> email;
 	cout << "Enter Password: ";
 	cin >> password;
 
-	if ((email == "admin@campus.edu" || email == "admin") && (password == "admin123" || password == "admin"))
+	if ((email == "admin@gmail.com") && (password == "admin"))
 	{
-		FacilityManager manager("Administrator", 1, "admin@campus.edu", "admin123", &dataManager);
+		FacilityManager manager("Administrator", 1, email, password, &dataManager);
 		cout << "\n[Success] Welcome, Facility Manager!\n";
 
 		int choice = -1;

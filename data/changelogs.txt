@@ -1,9 +1,0 @@
-1|2026-10-04|PENDING|Request submitted
-1|2026-10-05|IN_PROGRESS|Assigned to Technician hello (ID: 2)
-1|2026-10-05|COMPLETED|fixed the wiring; Replaced circuit breaker; Let me try to change the notes?
-2|2006-05-24|PENDING|Request submitted: this is going to be quite a problem
-2|2006-05-24|CANCELLED|Request cancelled by requester
-3|2026-03-21|PENDING|Request submitted: Let me try to type in the problem description
-4|2026-11-03|PENDING|Request submitted: Broken projector in lab
-3|2026-11-04|IN_PROGRESS|Assigned to Technician hello (ID: 2)
-3|2026-11-03|COMPLETED|Status updated to COMPLETED by Technician hello
