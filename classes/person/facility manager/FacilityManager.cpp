@@ -6,7 +6,6 @@
 #include "../../../data structures/queue/Queue.h"
 #include <iostream>
 #include <iomanip>
-#include <vector>
 #include <string>
 
 using namespace std;
@@ -40,7 +39,7 @@ void FacilityManager::displayMenu()
 
 void FacilityManager::viewTechnicians()
 {
-	vector<Technician> allTechnicians = getAllTechnicians();
+	TechnicianLinkedList allTechnicians = getAllTechnicians();
 
 	if (allTechnicians.empty())
 	{
@@ -49,24 +48,25 @@ void FacilityManager::viewTechnicians()
 	}
 
 	cout << "\n--- Registered Technicians ---\n";
-	for (int i = 0; i < allTechnicians.size(); i++)
+	for (TechnicianNode* curr = allTechnicians.getHead(); curr != nullptr; curr = curr->getNext())
 	{
-		cout << "ID: " << allTechnicians[i].getID()
-		     << " | Name: " << allTechnicians[i].getName()
-		     << " | Email: " << allTechnicians[i].getEmail() << "\n";
+		Technician* tech = curr->getData();
+		cout << "ID: " << tech->getID()
+		     << " | Name: " << tech->getName()
+		     << " | Email: " << tech->getEmail() << "\n";
 	}
 }
 
 void FacilityManager::addTechnician()
 {
-	vector<Technician> allTechnicians = getAllTechnicians();
+	TechnicianLinkedList allTechnicians = getAllTechnicians();
 
 	int newId = 1;
-	for (int i = 0; i < allTechnicians.size(); i++)
+	for (TechnicianNode* curr = allTechnicians.getHead(); curr != nullptr; curr = curr->getNext())
 	{
-		if (allTechnicians[i].getID() >= newId)
+		if (curr->getData()->getID() >= newId)
 		{
-			newId = allTechnicians[i].getID() + 1;
+			newId = curr->getData()->getID() + 1;
 		}
 	}
 
@@ -81,7 +81,7 @@ void FacilityManager::addTechnician()
 	cin >> password;
 
 	Technician newTech(name, newId, email, password, dataManager);
-	allTechnicians.push_back(newTech);
+	allTechnicians.append(newTech);
 
 	dataManager->setTechnicians(allTechnicians);
 	dataManager->saveTechnicians();
@@ -91,23 +91,23 @@ void FacilityManager::addTechnician()
 
 void FacilityManager::removeTechnician(int technicianId)	
 {
-	vector<Technician> allTechnicians = getAllTechnicians();
-	bool found = false;
-
-	for (int i = 0; i < allTechnicians.size(); i++)
+	TechnicianLinkedList allTechnicians = getAllTechnicians();
+	string techName = "";
+	for (TechnicianNode* curr = allTechnicians.getHead(); curr != nullptr; curr = curr->getNext())
 	{
-		if (allTechnicians[i].getID() == technicianId)
+		if (curr->getData()->getID() == technicianId)
 		{
-			cout << "[Success] Technician \"" << allTechnicians[i].getName() 
-			     << "\" (ID: " << technicianId << ") has been removed.\n";
-			allTechnicians.erase(allTechnicians.begin() + i);
-			found = true;
+			techName = curr->getData()->getName();
 			break;
 		}
 	}
 
-	if (found)
+	bool removed = allTechnicians.removeById(technicianId);
+
+	if (removed)
 	{
+		cout << "[Success] Technician \"" << techName 
+		     << "\" (ID: " << technicianId << ") has been removed.\n";
 		dataManager->setTechnicians(allTechnicians);
 		dataManager->saveTechnicians();
 	}
@@ -140,7 +140,7 @@ void FacilityManager::reviewLatestRequest()
 
 void FacilityManager::reviewRequests()
 {
-	vector<Request> allRequests = getAllRequests();
+	RequestLinkedList allRequests = getAllRequests();
 	if (allRequests.empty())
 	{
 		cout << "\n[Info] No requests found in the system.\n";
@@ -157,7 +157,7 @@ void FacilityManager::reviewRequests()
 	int filterChoice;
 	cin >> filterChoice;
 
-	vector<Request> filtered;
+	RequestLinkedList filtered;
 
 	if (filterChoice == 1)
 	{
@@ -165,7 +165,7 @@ void FacilityManager::reviewRequests()
 	}
 	else if (filterChoice == 2)
 	{
-		vector<string> categories = dataManager->getProblemCategories();
+		StringLinkedList categories = dataManager->getProblemCategories();
 		if (categories.empty())
 		{
 			cout << "[Info] No problem categories available.\n";
@@ -173,26 +173,27 @@ void FacilityManager::reviewRequests()
 		}
 
 		cout << "\nSelect Category:\n";
-		for (int i = 0; i < categories.size(); i++)
+		int catIndex = 1;
+		for (StringNode* curr = categories.getHead(); curr != nullptr; curr = curr->getNext(), catIndex++)
 		{
-			cout << (i + 1) << ". " << categories[i] << "\n";
+			cout << catIndex << ". " << curr->getData() << "\n";
 		}
 		cout << "Choose category (1-" << categories.size() << "): ";
 		int catChoice;
 		cin >> catChoice;
-		string selectedCategory = categories[catChoice - 1];
+		string selectedCategory = categories.getAt(catChoice - 1);
 
-		for (int i = 0; i < allRequests.size(); i++)
+		for (RequestNode* curr = allRequests.getHead(); curr != nullptr; curr = curr->getNext())
 		{
-			if (allRequests[i].getProblemCategory() == selectedCategory)
+			if (curr->getData()->getProblemCategory() == selectedCategory)
 			{
-				filtered.push_back(allRequests[i]);
+				filtered.append(*(curr->getData()));
 			}
 		}
 	}
 	else if (filterChoice == 3)
 	{
-		vector<string> locations = dataManager->getCampusLocations();
+		StringLinkedList locations = dataManager->getCampusLocations();
 		if (locations.empty())
 		{
 			cout << "[Info] No campus locations available.\n";
@@ -200,20 +201,21 @@ void FacilityManager::reviewRequests()
 		}
 
 		cout << "\nSelect Campus Location:\n";
-		for (int i = 0; i < locations.size(); i++)
+		int locIndex = 1;
+		for (StringNode* curr = locations.getHead(); curr != nullptr; curr = curr->getNext(), locIndex++)
 		{
-			cout << (i + 1) << ". " << locations[i] << "\n";
+			cout << locIndex << ". " << curr->getData() << "\n";
 		}
 		cout << "Choose location (1-" << locations.size() << "): ";
 		int locChoice;
 		cin >> locChoice;
-		string selectedLocation = locations[locChoice - 1];
+		string selectedLocation = locations.getAt(locChoice - 1);
 
-		for (int i = 0; i < allRequests.size(); i++)
+		for (RequestNode* curr = allRequests.getHead(); curr != nullptr; curr = curr->getNext())
 		{
-			if (allRequests[i].getCampusLocation() == selectedLocation)
+			if (curr->getData()->getCampusLocation() == selectedLocation)
 			{
-				filtered.push_back(allRequests[i]);
+				filtered.append(*(curr->getData()));
 			}
 		}
 	}
@@ -224,11 +226,11 @@ void FacilityManager::reviewRequests()
 		cout << "Enter Technician ID to filter by: ";
 		cin >> techId;
 
-		for (int i = 0; i < allRequests.size(); i++)
+		for (RequestNode* curr = allRequests.getHead(); curr != nullptr; curr = curr->getNext())
 		{
-			if (allRequests[i].getAssignedTechnicianID() == techId)
+			if (curr->getData()->getAssignedTechnicianID() == techId)
 			{
-				filtered.push_back(allRequests[i]);
+				filtered.append(*(curr->getData()));
 			}
 		}
 	}
@@ -238,14 +240,15 @@ void FacilityManager::reviewRequests()
 		cout << "Enter current date to check overdue status (YYYY-MM-DD): ";
 		cin >> currentDate;
 
-		for (int i = 0; i < allRequests.size(); i++)
+		for (RequestNode* curr = allRequests.getHead(); curr != nullptr; curr = curr->getNext())
 		{
-			if (allRequests[i].getStatus() != "COMPLETED" && allRequests[i].getStatus() != "CANCELLED")
+			Request* req = curr->getData();
+			if (req->getStatus() != "COMPLETED" && req->getStatus() != "CANCELLED")
 			{
-				string target = allRequests[i].getTargetCompletionDate();
+				string target = req->getTargetCompletionDate();
 				if (!target.empty() && target < currentDate)
 				{
-					filtered.push_back(allRequests[i]);
+					filtered.append(*req);
 				}
 			}
 		}
@@ -265,14 +268,15 @@ void FacilityManager::reviewRequests()
 	cout << "\n--- Matching Requests (" << filtered.size() << " found) ---\n";
 	cout << "ID   | Status          | Location             | Category         | Tech ID    | Target Date\n";
 	cout << "----------------------------------------------------------------------------------------------------\n";
-	for (int i = 0; i < filtered.size(); i++)
+	for (RequestNode* curr = filtered.getHead(); curr != nullptr; curr = curr->getNext())
 	{
-		cout << "#" << filtered[i].getID() << "\t | "
-		     << filtered[i].getStatus() << "\t | "
-		     << filtered[i].getCampusLocation() << "\t | "
-		     << filtered[i].getProblemCategory() << "\t | "
-		     << (filtered[i].getAssignedTechnicianID() == 0 ? "Unassigned" : to_string(filtered[i].getAssignedTechnicianID())) << "\t | "
-		     << (filtered[i].getTargetCompletionDate().empty() ? "None" : filtered[i].getTargetCompletionDate()) << "\n";
+		Request* req = curr->getData();
+		cout << "#" << req->getID() << "\t | "
+		     << req->getStatus() << "\t | "
+		     << req->getCampusLocation() << "\t | "
+		     << req->getProblemCategory() << "\t | "
+		     << (req->getAssignedTechnicianID() == 0 ? "Unassigned" : to_string(req->getAssignedTechnicianID())) << "\t | "
+		     << (req->getTargetCompletionDate().empty() ? "None" : req->getTargetCompletionDate()) << "\n";
 	}
 
 	cout << "\nEnter Request ID to view full details (or 0 to return): ";
@@ -280,20 +284,21 @@ void FacilityManager::reviewRequests()
 	if (cin >> detailId && detailId != 0)
 	{
 		bool found = false;
-		for (int i = 0; i < filtered.size(); i++)
+		for (RequestNode* curr = filtered.getHead(); curr != nullptr; curr = curr->getNext())
 		{
-			if (filtered[i].getID() == detailId)
+			Request* req = curr->getData();
+			if (req->getID() == detailId)
 			{
-				cout << "\n================ Request #" << filtered[i].getID() << " Details ================\n";
-				cout << "Requester ID:             " << filtered[i].getRequesterID() << "\n";
-				cout << "Campus Location:          " << filtered[i].getCampusLocation() << "\n";
-				cout << "Problem Category:         " << filtered[i].getProblemCategory() << "\n";
-				cout << "Status:                   " << filtered[i].getStatus() << "\n";
-				cout << "Target Completion Date:   " << (filtered[i].getTargetCompletionDate().empty() ? "None" : filtered[i].getTargetCompletionDate()) << "\n";
-				cout << "Date Assigned:            " << (filtered[i].getDateAssignedToTechnician().empty() ? "Not assigned" : filtered[i].getDateAssignedToTechnician()) << "\n";
-				cout << "Assigned Technician ID:   " << (filtered[i].getAssignedTechnicianID() == 0 ? "None" : to_string(filtered[i].getAssignedTechnicianID())) << "\n";
-				cout << "Description:              " << (filtered[i].getRequestDescription().empty() ? "None" : filtered[i].getRequestDescription()) << "\n";
-				cout << "Repair Notes:             " << (filtered[i].getRepairNotes().empty() ? "None" : filtered[i].getRepairNotes()) << "\n";
+				cout << "\n================ Request #" << req->getID() << " Details ================\n";
+				cout << "Requester ID:             " << req->getRequesterID() << "\n";
+				cout << "Campus Location:          " << req->getCampusLocation() << "\n";
+				cout << "Problem Category:         " << req->getProblemCategory() << "\n";
+				cout << "Status:                   " << req->getStatus() << "\n";
+				cout << "Target Completion Date:   " << (req->getTargetCompletionDate().empty() ? "None" : req->getTargetCompletionDate()) << "\n";
+				cout << "Date Assigned:            " << (req->getDateAssignedToTechnician().empty() ? "Not assigned" : req->getDateAssignedToTechnician()) << "\n";
+				cout << "Assigned Technician ID:   " << (req->getAssignedTechnicianID() == 0 ? "None" : to_string(req->getAssignedTechnicianID())) << "\n";
+				cout << "Description:              " << (req->getRequestDescription().empty() ? "None" : req->getRequestDescription()) << "\n";
+				cout << "Repair Notes:             " << (req->getRepairNotes().empty() ? "None" : req->getRepairNotes()) << "\n";
 				cout << "========================================================\n";
 				found = true;
 				break;
@@ -316,15 +321,15 @@ void FacilityManager::assignTechnician(int technicianId)
 	}
 
 	// Verify that the technician exists
-	vector<Technician> allTechnicians = getAllTechnicians();
+	TechnicianLinkedList allTechnicians = getAllTechnicians();
 	bool techExists = false;
 	string techName = "";
-	for (int i = 0; i < allTechnicians.size(); i++)
+	for (TechnicianNode* curr = allTechnicians.getHead(); curr != nullptr; curr = curr->getNext())
 	{
-		if (allTechnicians[i].getID() == technicianId)
+		if (curr->getData()->getID() == technicianId)
 		{
 			techExists = true;
-			techName = allTechnicians[i].getName();
+			techName = curr->getData()->getName();
 			break;
 		}
 	}
@@ -343,14 +348,14 @@ void FacilityManager::assignTechnician(int technicianId)
 	cin >> assignDate;
 
 	// Update the full requests list in DataManager
-	vector<Request> requests = getAllRequests();
-	for (int i = 0; i < requests.size(); i++)
+	RequestLinkedList requests = getAllRequests();
+	for (RequestNode* curr = requests.getHead(); curr != nullptr; curr = curr->getNext())
 	{
-		if (requests[i].getID() == reqId)
+		if (curr->getData()->getID() == reqId)
 		{
-			requests[i].setAssignedTechnicianID(technicianId);
-			requests[i].setDateAssignedToTechnician(assignDate);
-			requests[i].setStatus("IN_PROGRESS");
+			curr->getData()->setAssignedTechnicianID(technicianId);
+			curr->getData()->setDateAssignedToTechnician(assignDate);
+			curr->getData()->setStatus("IN_PROGRESS");
 			break;
 		}
 	}
@@ -360,13 +365,16 @@ void FacilityManager::assignTechnician(int technicianId)
 
 	dataManager->addChangeLog(reqId, "IN_PROGRESS", "Assigned to Technician " + techName + " (ID: " + to_string(technicianId) + ")", assignDate);
 
+	// Pop the assigned request from the pending queue so next pending request moves to front
+	currentQueue->pop();
+
 	cout << "\n[Success] Assigned Technician \"" << techName 
 	     << "\" (ID: " << technicianId << ") to Request #" << reqId << ".\n";
 }
 
 void FacilityManager::viewUsers()
 {
-	vector<Requester> allRequesters = getAllRequester();
+	RequesterLinkedList allRequesters = getAllRequester();
 
 	if (allRequesters.empty())
 	{
@@ -375,17 +383,18 @@ void FacilityManager::viewUsers()
 	}
 
 	cout << "\n--- Registered Users (Requesters) ---\n";
-	for (int i = 0; i < allRequesters.size(); i++)
+	for (RequesterNode* curr = allRequesters.getHead(); curr != nullptr; curr = curr->getNext())
 	{
-		cout << "ID: " << allRequesters[i].getID()
-		     << " | Name: " << allRequesters[i].getName()
-		     << " | Email: " << allRequesters[i].getEmail() << "\n";
+		Requester* req = curr->getData();
+		cout << "ID: " << req->getID()
+		     << " | Name: " << req->getName()
+		     << " | Email: " << req->getEmail() << "\n";
 	}
 }
 
 void FacilityManager::removeUser()
 {
-	vector<Requester> allRequesters = getAllRequester();
+	RequesterLinkedList allRequesters = getAllRequester();
 	if (allRequesters.empty())
 	{
 		cout << "\n[Info] No users available to remove.\n";
@@ -398,21 +407,22 @@ void FacilityManager::removeUser()
 	cout << "\nEnter User ID to remove: ";
 	cin >> userId;
 
-	bool found = false;
-	for (int i = 0; i < allRequesters.size(); i++)
+	string userName = "";
+	for (RequesterNode* curr = allRequesters.getHead(); curr != nullptr; curr = curr->getNext())
 	{
-		if (allRequesters[i].getID() == userId)
+		if (curr->getData()->getID() == userId)
 		{
-			cout << "[Success] User \"" << allRequesters[i].getName() 
-			     << "\" (ID: " << userId << ") has been removed.\n";
-			allRequesters.erase(allRequesters.begin() + i);
-			found = true;
+			userName = curr->getData()->getName();
 			break;
 		}
 	}
 
-	if (found)
+	bool removed = allRequesters.removeById(userId);
+
+	if (removed)
 	{
+		cout << "[Success] User \"" << userName 
+		     << "\" (ID: " << userId << ") has been removed.\n";
 		dataManager->setRequesters(allRequesters);
 		dataManager->saveRequesters();
 	}
@@ -424,7 +434,7 @@ void FacilityManager::removeUser()
 
 void FacilityManager::viewAllCampusLocations()
 {
-	vector<string> locations = dataManager->getCampusLocations();
+	StringLinkedList locations = dataManager->getCampusLocations();
 	if (locations.empty())
 	{
 		cout << "\n[Info] No campus locations recorded.\n";
@@ -432,9 +442,10 @@ void FacilityManager::viewAllCampusLocations()
 	}
 
 	cout << "\n--- Campus Locations ---\n";
-	for (int i = 0; i < locations.size(); i++)
+	int idx = 1;
+	for (StringNode* curr = locations.getHead(); curr != nullptr; curr = curr->getNext(), idx++)
 	{
-		cout << (i + 1) << ". " << locations[i] << "\n";
+		cout << idx << ". " << curr->getData() << "\n";
 	}
 }
 
@@ -450,17 +461,14 @@ void FacilityManager::addCampusLocation()
 		return;
 	}
 
-	vector<string> locations = dataManager->getCampusLocations();
-	for (int i = 0; i < locations.size(); i++)
+	StringLinkedList locations = dataManager->getCampusLocations();
+	if (locations.contains(newLocation))
 	{
-		if (locations[i] == newLocation)
-		{
-			cout << "[Error] Location \"" << newLocation << "\" already exists.\n";
-			return;
-		}
+		cout << "[Error] Location \"" << newLocation << "\" already exists.\n";
+		return;
 	}
 
-	locations.push_back(newLocation);
+	locations.append(newLocation);
 	dataManager->setCampusLocations(locations);
 	dataManager->saveCampusLocations();
 
@@ -469,7 +477,7 @@ void FacilityManager::addCampusLocation()
 
 void FacilityManager::removeCampusLocation()
 {
-	vector<string> locations = dataManager->getCampusLocations();
+	StringLinkedList locations = dataManager->getCampusLocations();
 	if (locations.empty())
 	{
 		cout << "\n[Info] No campus locations available to remove.\n";
@@ -482,17 +490,24 @@ void FacilityManager::removeCampusLocation()
 	cout << "\nEnter the number of the location to remove (1-" << locations.size() << "): ";
 	cin >> choice;
 
-	string removed = locations[choice - 1];
-	locations.erase(locations.begin() + (choice - 1));
-	dataManager->setCampusLocations(locations);
-	dataManager->saveCampusLocations();
+	string removed = locations.getAt(choice - 1);
+	bool success = locations.removeAt(choice - 1);
 
-	cout << "[Success] Removed location \"" << removed << "\".\n";
+	if (success)
+	{
+		dataManager->setCampusLocations(locations);
+		dataManager->saveCampusLocations();
+		cout << "[Success] Removed location \"" << removed << "\".\n";
+	}
+	else
+	{
+		cout << "[Error] Invalid selection.\n";
+	}
 }
 
 void FacilityManager::viewAllProblemCategories()
 {
-	vector<string> categories = dataManager->getProblemCategories();
+	StringLinkedList categories = dataManager->getProblemCategories();
 	if (categories.empty())
 	{
 		cout << "\n[Info] No problem categories recorded.\n";
@@ -500,9 +515,10 @@ void FacilityManager::viewAllProblemCategories()
 	}
 
 	cout << "\n--- Problem Categories ---\n";
-	for (int i = 0; i < categories.size(); i++)
+	int idx = 1;
+	for (StringNode* curr = categories.getHead(); curr != nullptr; curr = curr->getNext(), idx++)
 	{
-		cout << (i + 1) << ". " << categories[i] << "\n";
+		cout << idx << ". " << curr->getData() << "\n";
 	}
 }
 
@@ -518,17 +534,14 @@ void FacilityManager::addProblemCategory()
 		return;
 	}
 
-	vector<string> categories = dataManager->getProblemCategories();
-	for (int i = 0; i < categories.size(); i++)
+	StringLinkedList categories = dataManager->getProblemCategories();
+	if (categories.contains(newCategory))
 	{
-		if (categories[i] == newCategory)
-		{
-			cout << "[Error] Category \"" << newCategory << "\" already exists.\n";
-			return;
-		}
+		cout << "[Error] Category \"" << newCategory << "\" already exists.\n";
+		return;
 	}
 
-	categories.push_back(newCategory);
+	categories.append(newCategory);
 	dataManager->setProblemCategories(categories);
 	dataManager->saveProblemCategories();
 
@@ -537,7 +550,7 @@ void FacilityManager::addProblemCategory()
 
 void FacilityManager::removeProblemCategory()
 {
-	vector<string> categories = dataManager->getProblemCategories();
+	StringLinkedList categories = dataManager->getProblemCategories();
 	if (categories.empty())
 	{
 		cout << "\n[Info] No problem categories available to remove.\n";
@@ -549,25 +562,33 @@ void FacilityManager::removeProblemCategory()
 	int choice;
 	cout << "\nEnter the number of the category to remove (1-" << categories.size() << "): ";
 	cin >> choice;
-	string removed = categories[choice - 1];
-	categories.erase(categories.begin() + (choice - 1));
-	dataManager->setProblemCategories(categories);
-	dataManager->saveProblemCategories();
 
-	cout << "[Success] Removed category \"" << removed << "\".\n";
+	string removed = categories.getAt(choice - 1);
+	bool success = categories.removeAt(choice - 1);
+
+	if (success)
+	{
+		dataManager->setProblemCategories(categories);
+		dataManager->saveProblemCategories();
+		cout << "[Success] Removed category \"" << removed << "\".\n";
+	}
+	else
+	{
+		cout << "[Error] Invalid selection.\n";
+	}
 }
 
-vector<Technician> FacilityManager::getAllTechnicians()
+TechnicianLinkedList FacilityManager::getAllTechnicians()
 {
 	return dataManager->getTechnicians();
 }
 
-vector<Request> FacilityManager::getAllRequests()
+RequestLinkedList FacilityManager::getAllRequests()
 {
 	return dataManager->getRequests();
 }
 
-vector<Requester> FacilityManager::getAllRequester()
+RequesterLinkedList FacilityManager::getAllRequester()
 {
 	return dataManager->getRequesters();
 }
@@ -579,7 +600,7 @@ Queue* FacilityManager::getCurrentRequestQueue()
 
 void FacilityManager::viewServiceHistory()
 {
-	vector<ChangeLog*> history = getServiceHistory();
+	ChangeLogLinkedList history = getServiceHistory();
 
 	if (history.empty())
 	{
@@ -593,16 +614,17 @@ void FacilityManager::viewServiceHistory()
 	     << setw(16) << "Status" << " | "
 	     << "Repair Notes / Action\n";
 	cout << "------------------------------------------------------------------------------------\n";
-	for (int i = 0; i < history.size(); i++)
+	for (ChangeLogNode* curr = history.getHead(); curr != nullptr; curr = curr->getNext())
 	{
-		cout << left << setw(8) << ("#" + to_string(history[i]->getRequestId())) << " | "
-		     << setw(12) << history[i]->getDate() << " | "
-		     << setw(16) << history[i]->getStatus() << " | "
-		     << history[i]->getRepairNotes() << "\n";
+		ChangeLog* log = curr->getData();
+		cout << left << setw(8) << ("#" + to_string(log->getRequestId())) << " | "
+		     << setw(12) << log->getDate() << " | "
+		     << setw(16) << log->getStatus() << " | "
+		     << log->getRepairNotes() << "\n";
 	}
 }
 
-vector<ChangeLog*> FacilityManager::getServiceHistory()
+ChangeLogLinkedList FacilityManager::getServiceHistory()
 {
 	return dataManager->getChangeLogs();
 }

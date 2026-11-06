@@ -5,9 +5,12 @@
 #include "../classes/person/technician/Technician.h"
 #include "../classes/request/Request.h"
 #include "../data structures/queue/Queue.h"
-#include "../data structures/linked list/LinkedList.h"
+#include "../data structures/linked list/RequestLinkedList.h"
+#include "../data structures/linked list/TechnicianLinkedList.h"
+#include "../data structures/linked list/RequesterLinkedList.h"
+#include "../data structures/linked list/ChangeLogLinkedList.h"
+#include "../data structures/linked list/StringLinkedList.h"
 #include "../data structures/linked list/changelog/ChangeLog.h"
-#include <vector>
 #include <string>
 
 using namespace std;
@@ -35,22 +38,21 @@ public:
 	bool saveCampusLocations();
 	bool saveProblemCategories();
 
-	vector<Requester> getRequesters();
-	vector<Technician> getTechnicians();
-	vector<Request> getRequests();
+	RequesterLinkedList getRequesters();
+	TechnicianLinkedList getTechnicians();
+	RequestLinkedList getRequests();
 	Queue* getRequestQueue();
-	LinkedList* getChangeLogList();
-	vector<ChangeLog*> getChangeLogs();
-	vector<string> getCampusLocations();
-	vector<string> getProblemCategories();
+	ChangeLogLinkedList getChangeLogs();
+	StringLinkedList getCampusLocations();
+	StringLinkedList getProblemCategories();
 
-	void setRequesters(vector<Requester> requesters);
-	void setTechnicians(vector<Technician> technicians);
-	void setRequests(vector<Request> requests);
-	void setChangeLogs(vector<ChangeLog*> changeLogs);
+	void setRequesters(const RequesterLinkedList& requesters);
+	void setTechnicians(const TechnicianLinkedList& technicians);
+	void setRequests(const RequestLinkedList& requests);
+	void setChangeLogs(const ChangeLogLinkedList& changeLogs);
 	void addChangeLog(int requestId, string status, string repairNotes, string date = "");
-	void setCampusLocations(vector<string> campusLocations);
-	void setProblemCategories(vector<string> problemCategories);
+	void setCampusLocations(const StringLinkedList& campusLocations);
+	void setProblemCategories(const StringLinkedList& problemCategories);
 
 	void setRequestersFilePath(string path);
 	void setTechniciansFilePath(string path);
@@ -67,17 +69,15 @@ private:
 	string campusLocationsFilePath;
 	string problemCategoriesFilePath;
 
-	vector<Requester> requesters;
-	vector<Technician> technicians;
-	vector<Request> requests;
+	RequesterLinkedList requesters;
+	TechnicianLinkedList technicians;
+	RequestLinkedList requests;
 	Queue* requestQueue;
-	LinkedList* changeLogList;
-	vector<ChangeLog*> changeLogs;
-	vector<string> campusLocations;
-	vector<string> problemCategories;
+	ChangeLogLinkedList changeLogs;
+	StringLinkedList campusLocations;
+	StringLinkedList problemCategories;
 
-	vector<string> split(const string& str, char delimiter);
+	StringLinkedList split(const string& str, char delimiter);
 };
 
 #endif
-

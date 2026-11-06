@@ -1,25 +1,37 @@
 #include "LinkedList.h"
 
-LinkedList::LinkedList() : next(nullptr), val(nullptr) {}
+LinkedList::LinkedList() : head(nullptr), tail(nullptr), listSize(0) {}
 
-LinkedList::LinkedList(ChangeLog* val) : next(nullptr), val(val) {}
-
-ChangeLog* LinkedList::getVal()
+LinkedList::~LinkedList()
 {
-	return val;
+	clear();
 }
 
-LinkedList* LinkedList::getNext()
+int LinkedList::size() const
 {
-	return next;
+	return listSize;
 }
 
-void LinkedList::updateVal(ChangeLog* val)
+bool LinkedList::empty() const
 {
-	this->val = val;
+	return listSize == 0;
 }
 
-void LinkedList::updateNext(LinkedList* next)
+void LinkedList::clear()
 {
-	this->next = next;
+	Node* current = head;
+	while (current != nullptr)
+	{
+		Node* nextNode = current->getNext();
+		delete current;
+		current = nextNode;
+	}
+	head = nullptr;
+	tail = nullptr;
+	listSize = 0;
+}
+
+Node* LinkedList::getHeadNode() const
+{
+	return head;
 }

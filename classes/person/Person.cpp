@@ -48,6 +48,6 @@ DataManager* Person::getDataManager() {
 	return dataManager;
 }
 
-void Person::displaymenu() {
+void Person::displayMenu() {
 	// Virtual base method
 }

@@ -28,7 +28,7 @@ public:
 	void setDataManager(DataManager* dataManager);
 	DataManager* getDataManager();
 
-	virtual void displaymenu();
+	virtual void displayMenu();
 
 protected:
 	DataManager* dataManager;

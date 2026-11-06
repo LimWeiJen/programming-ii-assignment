@@ -6,8 +6,12 @@
 #include "../technician/Technician.h"
 #include "../../request/Request.h"
 #include "../../../data structures/queue/Queue.h"
+#include "../../../data structures/linked list/RequestLinkedList.h"
+#include "../../../data structures/linked list/TechnicianLinkedList.h"
+#include "../../../data structures/linked list/RequesterLinkedList.h"
+#include "../../../data structures/linked list/ChangeLogLinkedList.h"
+#include "../../../data structures/linked list/StringLinkedList.h"
 #include "../../../data structures/linked list/changelog/ChangeLog.h"
-#include <vector>
 #include <string>
 
 using namespace std;
@@ -34,11 +38,11 @@ public:
 	void viewServiceHistory();
 
 private:
-	vector<Technician> getAllTechnicians();
-	vector<Request> getAllRequests();
-	vector<Requester> getAllRequester();
+	TechnicianLinkedList getAllTechnicians();
+	RequestLinkedList getAllRequests();
+	RequesterLinkedList getAllRequester();
 	Queue* getCurrentRequestQueue();
-	vector<ChangeLog*> getServiceHistory();
+	ChangeLogLinkedList getServiceHistory();
 };
 
 #endif

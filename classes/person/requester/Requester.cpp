@@ -2,7 +2,6 @@
 #include "../../../data/DataManager.h"
 #include "../../request/Request.h"
 #include <iostream>
-#include <vector>
 #include <string>
 
 using namespace std;
@@ -28,32 +27,34 @@ void Requester::submitRequest()
 	cout << "\n--- Submit New Maintenance Request ---\n";
 
 	// 1. Select Campus Location
-	vector<string> locations = dataManager->getCampusLocations();
+	StringLinkedList locations = dataManager->getCampusLocations();
 	string selectedLocation = "";
 
 	cout << "\nAvailable Campus Locations:\n";
-	for (int i = 0; i < locations.size(); i++)
+	int locIndex = 1;
+	for (StringNode* curr = locations.getHead(); curr != nullptr; curr = curr->getNext(), locIndex++)
 	{
-		cout << (i + 1) << ". " << locations[i] << "\n";
+		cout << locIndex << ". " << curr->getData() << "\n";
 	}
 	cout << "Choose location (1-" << locations.size() << "): ";
 	int locChoice;
 	cin >> locChoice;
-	selectedLocation = locations[locChoice - 1];
+	selectedLocation = locations.getAt(locChoice - 1);
 
 	// 2. Select Problem Category
-	vector<string> categories = dataManager->getProblemCategories();
+	StringLinkedList categories = dataManager->getProblemCategories();
 	string selectedCategory = "";
 
 	cout << "\nAvailable Problem Categories:\n";
-	for (int i = 0; i < categories.size(); i++)
+	int catIndex = 1;
+	for (StringNode* curr = categories.getHead(); curr != nullptr; curr = curr->getNext(), catIndex++)
 	{
-		cout << (i + 1) << ". " << categories[i] << "\n";
+		cout << catIndex << ". " << curr->getData() << "\n";
 	}
 	cout << "Choose category (1-" << categories.size() << "): ";
 	int catChoice;
 	cin >> catChoice;
-	selectedCategory = categories[catChoice - 1];
+	selectedCategory = categories.getAt(catChoice - 1);
 
 	// 3. Enter Problem Description
 	string description;
@@ -66,13 +67,13 @@ void Requester::submitRequest()
 	getline(cin >> ws, targetDate);
 
 	// 5. Generate New Request ID (max ID + 1)
-	vector<Request> requests = dataManager->getRequests();
+	RequestLinkedList requests = dataManager->getRequests();
 	int newId = 1;
-	for (int i = 0; i < requests.size(); i++)
+	for (RequestNode* curr = requests.getHead(); curr != nullptr; curr = curr->getNext())
 	{
-		if (requests[i].getID() >= newId)
+		if (curr->getData()->getID() >= newId)
 		{
-			newId = requests[i].getID() + 1;
+			newId = curr->getData()->getID() + 1;
 		}
 	}
 
@@ -82,7 +83,7 @@ void Requester::submitRequest()
 	newReq.setStatus("PENDING");
 	newReq.setAssignedTechnicianID(0);
 
-	requests.push_back(newReq);
+	requests.append(newReq);
 	dataManager->setRequests(requests);
 	dataManager->saveRequests();
 
@@ -94,13 +95,14 @@ void Requester::submitRequest()
 
 void Requester::viewSubmittedRequests()
 {
-	vector<Request> requests = dataManager->getRequests();
+	RequestLinkedList requests = dataManager->getRequests();
 	bool found = false;
 
 	cout << "\n--- Your Submitted Requests ---\n";
-	for (int i = 0; i < requests.size(); i++)
+	for (RequestNode* curr = requests.getHead(); curr != nullptr; curr = curr->getNext())
 	{
-		if (requests[i].getRequesterID() == this->getID())
+		Request* req = curr->getData();
+		if (req->getRequesterID() == this->getID())
 		{
 			if (!found)
 			{
@@ -108,11 +110,11 @@ void Requester::viewSubmittedRequests()
 				cout << "----------------------------------------------------------------------------------------\n";
 				found = true;
 			}
-			cout << "#" << requests[i].getID() << "\t | "
-			     << requests[i].getStatus() << "\t | "
-			     << requests[i].getCampusLocation() << "\t | "
-			     << requests[i].getProblemCategory() << "\t | "
-			     << requests[i].getTargetCompletionDate() << "\n";
+			cout << "#" << req->getID() << "\t | "
+			     << req->getStatus() << "\t | "
+			     << req->getCampusLocation() << "\t | "
+			     << req->getProblemCategory() << "\t | "
+			     << req->getTargetCompletionDate() << "\n";
 		}
 	}
 
@@ -130,38 +132,39 @@ void Requester::viewRequestDetails()
 	cout << "\nEnter Request ID to view full details: ";
 	cin >> reqId;
 
-	vector<Request> requests = dataManager->getRequests();
-	for (int i = 0; i < requests.size(); i++)
+	RequestLinkedList requests = dataManager->getRequests();
+	for (RequestNode* curr = requests.getHead(); curr != nullptr; curr = curr->getNext())
 	{
-		if (requests[i].getID() == reqId)
+		Request* req = curr->getData();
+		if (req->getID() == reqId)
 		{
-			if (requests[i].getRequesterID() != this->getID())
+			if (req->getRequesterID() != this->getID())
 			{
 				cout << "[Error] Unauthorized. You can only view requests you submitted.\n";
 				return;
 			}
 
 			cout << "\n================ Request Details ================\n";
-			cout << "Request ID:               #" << requests[i].getID() << "\n";
-			cout << "Campus Location:          " << requests[i].getCampusLocation() << "\n";
-			cout << "Problem Category:         " << requests[i].getProblemCategory() << "\n";
-			cout << "Description:              " << requests[i].getRequestDescription() << "\n";
-			cout << "Status:                   " << requests[i].getStatus() << "\n";
+			cout << "Request ID:               #" << req->getID() << "\n";
+			cout << "Campus Location:          " << req->getCampusLocation() << "\n";
+			cout << "Problem Category:         " << req->getProblemCategory() << "\n";
+			cout << "Description:              " << req->getRequestDescription() << "\n";
+			cout << "Status:                   " << req->getStatus() << "\n";
 
-			if (requests[i].getAssignedTechnicianID() > 0)
+			if (req->getAssignedTechnicianID() > 0)
 			{
-				cout << "Assigned Technician ID:   " << requests[i].getAssignedTechnicianID() << "\n";
-				cout << "Date Assigned:            " << requests[i].getDateAssignedToTechnician() << "\n";
-				cout << "Target Completion Date:   " << requests[i].getTargetCompletionDate() << "\n";
+				cout << "Assigned Technician ID:   " << req->getAssignedTechnicianID() << "\n";
+				cout << "Date Assigned:            " << req->getDateAssignedToTechnician() << "\n";
+				cout << "Target Completion Date:   " << req->getTargetCompletionDate() << "\n";
 			}
 			else
 			{
 				cout << "Assigned Technician:      Not yet assigned\n";
 			}
 
-			if (!requests[i].getRepairNotes().empty())
+			if (!req->getRepairNotes().empty())
 			{
-				cout << "Repair Notes:             " << requests[i].getRepairNotes() << "\n";
+				cout << "Repair Notes:             " << req->getRepairNotes() << "\n";
 			}
 			cout << "=================================================\n";
 			return;
@@ -179,30 +182,31 @@ void Requester::cancelRequest()
 	cout << "\nEnter Request ID to cancel: ";
 	cin >> reqId;
 
-	vector<Request> requests = dataManager->getRequests();
-	for (int i = 0; i < requests.size(); i++)
+	RequestLinkedList requests = dataManager->getRequests();
+	for (RequestNode* curr = requests.getHead(); curr != nullptr; curr = curr->getNext())
 	{
-		if (requests[i].getID() == reqId)
+		Request* req = curr->getData();
+		if (req->getID() == reqId)
 		{
-			if (requests[i].getRequesterID() != this->getID())
+			if (req->getRequesterID() != this->getID())
 			{
 				cout << "[Error] Unauthorized. You can only cancel your own requests.\n";
 				return;
 			}
 
-			if (requests[i].getStatus() == "COMPLETED")
+			if (req->getStatus() == "COMPLETED")
 			{
 				cout << "[Error] Cannot cancel Request #" << reqId << " because it is already marked as COMPLETED.\n";
 				return;
 			}
 
-			if (requests[i].getStatus() == "CANCELLED")
+			if (req->getStatus() == "CANCELLED")
 			{
 				cout << "[Info] Request #" << reqId << " is already CANCELLED.\n";
 				return;
 			}
 
-			requests[i].setStatus("CANCELLED");
+			req->setStatus("CANCELLED");
 			dataManager->setRequests(requests);
 			dataManager->saveRequests();
 

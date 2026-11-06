@@ -3,7 +3,6 @@
 #include "classes/person/technician/Technician.h"
 #include "classes/person/requester/Requester.h"
 #include <iostream>
-#include <vector>
 #include <string>
 
 using namespace std;
@@ -35,6 +34,7 @@ int main()
 		{
 			cin.clear();
 			cin.ignore(10000, '\n');
+			roleChoice = -1;
 			cout << "\n[Error] Invalid input. Please enter a number.\n";
 			continue;
 		}
@@ -166,7 +166,7 @@ void handleFacilityManager(DataManager& dataManager)
 
 void handleTechnician(DataManager& dataManager)
 {
-	vector<Technician> technicians = dataManager.getTechnicians();
+	TechnicianLinkedList technicians = dataManager.getTechnicians();
 	if (technicians.empty())
 	{
 		cout << "\n[Info] No technicians registered in the system.\n";
@@ -184,11 +184,12 @@ void handleTechnician(DataManager& dataManager)
 	bool authenticated = false;
 	Technician* currentTech = nullptr;
 
-	for (int i = 0; i < technicians.size(); i++)
+	for (TechnicianNode* curr = technicians.getHead(); curr != nullptr; curr = curr->getNext())
 	{
-		if ((technicians[i].getEmail() == input || to_string(technicians[i].getID()) == input) && technicians[i].getPassword() == password)
+		Technician* tech = curr->getData();
+		if ((tech->getEmail() == input || to_string(tech->getID()) == input) && tech->getPassword() == password)
 		{
-			currentTech = new Technician(technicians[i].getName(), technicians[i].getID(), technicians[i].getEmail(), technicians[i].getPassword(), &dataManager);
+			currentTech = new Technician(tech->getName(), tech->getID(), tech->getEmail(), tech->getPassword(), &dataManager);
 			authenticated = true;
 			break;
 		}
@@ -256,7 +257,7 @@ void handleRequester(DataManager& dataManager)
 
 	if (authChoice == 1)
 	{
-		vector<Requester> requesters = dataManager.getRequesters();
+		RequesterLinkedList requesters = dataManager.getRequesters();
 		if (requesters.empty())
 		{
 			cout << "\n[Info] No users registered yet. Please Sign Up first!\n";
@@ -273,11 +274,12 @@ void handleRequester(DataManager& dataManager)
 		bool authenticated = false;
 		Requester* currentRequester = nullptr;
 
-		for (int i = 0; i < requesters.size(); i++)
+		for (RequesterNode* curr = requesters.getHead(); curr != nullptr; curr = curr->getNext())
 		{
-			if ((requesters[i].getEmail() == input || to_string(requesters[i].getID()) == input) && requesters[i].getPassword() == password)
+			Requester* req = curr->getData();
+			if ((req->getEmail() == input || to_string(req->getID()) == input) && req->getPassword() == password)
 			{
-				currentRequester = new Requester(requesters[i].getName(), requesters[i].getID(), requesters[i].getEmail(), requesters[i].getPassword(), &dataManager);
+				currentRequester = new Requester(req->getName(), req->getID(), req->getEmail(), req->getPassword(), &dataManager);
 				authenticated = true;
 				break;
 			}
@@ -334,10 +336,10 @@ void handleRequester(DataManager& dataManager)
 		cout << "Enter Password: ";
 		cin >> password;
 
-		vector<Requester> requesters = dataManager.getRequesters();
-		for (int i = 0; i < requesters.size(); i++)
+		RequesterLinkedList requesters = dataManager.getRequesters();
+		for (RequesterNode* curr = requesters.getHead(); curr != nullptr; curr = curr->getNext())
 		{
-			if (requesters[i].getEmail() == email)
+			if (curr->getData()->getEmail() == email)
 			{
 				cout << "\n[Error] Email is already registered. Please Sign In instead.\n";
 				return;
@@ -345,16 +347,16 @@ void handleRequester(DataManager& dataManager)
 		}
 
 		int newId = 1;
-		for (int i = 0; i < requesters.size(); i++)
+		for (RequesterNode* curr = requesters.getHead(); curr != nullptr; curr = curr->getNext())
 		{
-			if (requesters[i].getID() >= newId)
+			if (curr->getData()->getID() >= newId)
 			{
-				newId = requesters[i].getID() + 1;
+				newId = curr->getData()->getID() + 1;
 			}
 		}
 
 		Requester newRequester(name, newId, email, password, &dataManager);
-		requesters.push_back(newRequester);
+		requesters.append(newRequester);
 		dataManager.setRequesters(requesters);
 		dataManager.saveRequesters();
 
@@ -398,4 +400,3 @@ void handleRequester(DataManager& dataManager)
 		}
 	}
 }
-

@@ -26,7 +26,6 @@ DataManager::DataManager()
 	problemCategoriesFilePath = "data/problem_categories.txt";
 
 	requestQueue = nullptr;
-	changeLogList = nullptr;
 }
 
 DataManager::~DataManager()
@@ -36,29 +35,16 @@ DataManager::~DataManager()
 		delete requestQueue;
 		requestQueue = nullptr;
 	}
-
-	while (changeLogList != nullptr)
-	{
-		LinkedList* tmp = changeLogList->getNext();
-		delete changeLogList;
-		changeLogList = tmp;
-	}
-
-	for (size_t i = 0; i < changeLogs.size(); i++)
-	{
-		delete changeLogs[i];
-	}
-	changeLogs.clear();
 }
 
-vector<string> DataManager::split(const string& str, char delimiter)
+StringLinkedList DataManager::split(const string& str, char delimiter)
 {
-	vector<string> tokens;
+	StringLinkedList tokens;
 	string token;
 	stringstream ss(str);
 	while (getline(ss, token, delimiter))
 	{
-		tokens.push_back(token);
+		tokens.append(token);
 	}
 	return tokens;
 }
@@ -101,14 +87,14 @@ bool DataManager::loadRequesters()
 	while (getline(file, line))
 	{
 		if (line.empty()) continue;
-		vector<string> tokens = split(line, '|');
+		StringLinkedList tokens = split(line, '|');
 		if (tokens.size() >= 4)
 		{
-			int id = stoi(tokens[0]);
-			string name = tokens[1];
-			string email = tokens[2];
-			string password = tokens[3];
-			requesters.push_back(Requester(name, id, email, password));
+			int id = stoi(tokens.getAt(0));
+			string name = tokens.getAt(1);
+			string email = tokens.getAt(2);
+			string password = tokens.getAt(3);
+			requesters.append(Requester(name, id, email, password));
 		}
 	}
 	file.close();
@@ -129,14 +115,14 @@ bool DataManager::loadTechnicians()
 	while (getline(file, line))
 	{
 		if (line.empty()) continue;
-		vector<string> tokens = split(line, '|');
+		StringLinkedList tokens = split(line, '|');
 		if (tokens.size() >= 4)
 		{
-			int id = stoi(tokens[0]);
-			string name = tokens[1];
-			string email = tokens[2];
-			string password = tokens[3];
-			technicians.push_back(Technician(name, id, email, password));
+			int id = stoi(tokens.getAt(0));
+			string name = tokens.getAt(1);
+			string email = tokens.getAt(2);
+			string password = tokens.getAt(3);
+			technicians.append(Technician(name, id, email, password));
 		}
 	}
 	file.close();
@@ -163,19 +149,19 @@ bool DataManager::loadRequests()
 	while (getline(file, line))
 	{
 		if (line.empty()) continue;
-		vector<string> tokens = split(line, '|');
+		StringLinkedList tokens = split(line, '|');
 		if (tokens.size() >= 5)
 		{
-			int id = stoi(tokens[0]);
-			int requesterId = stoi(tokens[1]);
-			int assignedTechId = stoi(tokens[2]);
-			string location = tokens[3];
-			string category = tokens[4];
-			string desc = tokens.size() > 5 ? tokens[5] : "";
-			string status = tokens.size() > 6 ? tokens[6] : "PENDING";
-			string dateAssigned = tokens.size() > 7 ? tokens[7] : "";
-			string targetDate = tokens.size() > 8 ? tokens[8] : "";
-			string notes = tokens.size() > 9 ? tokens[9] : "";
+			int id = stoi(tokens.getAt(0));
+			int requesterId = stoi(tokens.getAt(1));
+			int assignedTechId = stoi(tokens.getAt(2));
+			string location = tokens.getAt(3);
+			string category = tokens.getAt(4);
+			string desc = tokens.size() > 5 ? tokens.getAt(5) : "";
+			string status = tokens.size() > 6 ? tokens.getAt(6) : "PENDING";
+			string dateAssigned = tokens.size() > 7 ? tokens.getAt(7) : "";
+			string targetDate = tokens.size() > 8 ? tokens.getAt(8) : "";
+			string notes = tokens.size() > 9 ? tokens.getAt(9) : "";
 
 			Request req(id, requesterId, location, category, targetDate, dateAssigned);
 			req.setAssignedTechnicianID(assignedTechId);
@@ -185,22 +171,23 @@ bool DataManager::loadRequests()
 			req.setTargetCompletionDate(targetDate);
 			req.setRepairNotes(notes);
 
-			requests.push_back(req);
+			requests.append(req);
 		}
 	}
 	file.close();
 
-	for (size_t i = 0; i < requests.size(); i++)
+	for (RequestNode* curr = requests.getHead(); curr != nullptr; curr = curr->getNext())
 	{
-		if (requests[i].getStatus() == "PENDING" || requests[i].getStatus() == "SUBMITTED")
+		Request* req = curr->getData();
+		if (req->getStatus() == "PENDING" || req->getStatus() == "SUBMITTED")
 		{
 			if (requestQueue == nullptr)
 			{
-				requestQueue = new Queue(&requests[i]);
+				requestQueue = new Queue(req);
 			}
 			else
 			{
-				requestQueue->push(&requests[i]);
+				requestQueue->push(req);
 			}
 		}
 	}
@@ -217,51 +204,25 @@ bool DataManager::loadChangeLogs()
 		return false;
 	}
 
-	while (changeLogList != nullptr)
-	{
-		LinkedList* tmp = changeLogList->getNext();
-		delete changeLogList;
-		changeLogList = tmp;
-	}
-
-	for (size_t i = 0; i < changeLogs.size(); i++)
-	{
-		delete changeLogs[i];
-	}
 	changeLogs.clear();
 
 	string line;
 	while (getline(file, line))
 	{
 		if (line.empty()) continue;
-		vector<string> tokens = split(line, '|');
+		StringLinkedList tokens = split(line, '|');
 		if (tokens.size() >= 3)
 		{
-			int reqId = stoi(tokens[0]);
-			string date = tokens[1];
-			string status = tokens[2];
-			string notes = tokens.size() > 3 ? tokens[3] : "";
+			int reqId = stoi(tokens.getAt(0));
+			string date = tokens.getAt(1);
+			string status = tokens.getAt(2);
+			string notes = tokens.size() > 3 ? tokens.getAt(3) : "";
 
 			ChangeLog* log = new ChangeLog(date, reqId, status, notes);
-			changeLogs.push_back(log);
+			changeLogs.append(log);
 		}
 	}
 	file.close();
-
-	LinkedList* tail = nullptr;
-	for (size_t i = 0; i < changeLogs.size(); i++)
-	{
-		if (changeLogList == nullptr)
-		{
-			changeLogList = new LinkedList(changeLogs[i]);
-			tail = changeLogList;
-		}
-		else
-		{
-			tail->updateNext(new LinkedList(changeLogs[i]));
-			tail = tail->getNext();
-		}
-	}
 
 	return true;
 }
@@ -285,7 +246,7 @@ bool DataManager::loadCampusLocations()
 	{
 		if (!line.empty())
 		{
-			campusLocations.push_back(line);
+			campusLocations.append(line);
 		}
 	}
 	file.close();
@@ -307,7 +268,7 @@ bool DataManager::loadProblemCategories()
 	{
 		if (!line.empty())
 		{
-			problemCategories.push_back(line);
+			problemCategories.append(line);
 		}
 	}
 	file.close();
@@ -323,12 +284,13 @@ bool DataManager::saveRequesters()
 		return false;
 	}
 
-	for (size_t i = 0; i < requesters.size(); i++)
+	for (RequesterNode* curr = requesters.getHead(); curr != nullptr; curr = curr->getNext())
 	{
-		file << requesters[i].getID() << "|"
-		     << requesters[i].getName() << "|"
-		     << requesters[i].getEmail() << "|"
-		     << requesters[i].getPassword() << "\n";
+		Requester* req = curr->getData();
+		file << req->getID() << "|"
+		     << req->getName() << "|"
+		     << req->getEmail() << "|"
+		     << req->getPassword() << "\n";
 	}
 	file.close();
 	return true;
@@ -343,12 +305,13 @@ bool DataManager::saveTechnicians()
 		return false;
 	}
 
-	for (size_t i = 0; i < technicians.size(); i++)
+	for (TechnicianNode* curr = technicians.getHead(); curr != nullptr; curr = curr->getNext())
 	{
-		file << technicians[i].getID() << "|"
-		     << technicians[i].getName() << "|"
-		     << technicians[i].getEmail() << "|"
-		     << technicians[i].getPassword() << "\n";
+		Technician* tech = curr->getData();
+		file << tech->getID() << "|"
+		     << tech->getName() << "|"
+		     << tech->getEmail() << "|"
+		     << tech->getPassword() << "\n";
 	}
 	file.close();
 	return true;
@@ -363,18 +326,19 @@ bool DataManager::saveRequests()
 		return false;
 	}
 
-	for (size_t i = 0; i < requests.size(); i++)
+	for (RequestNode* curr = requests.getHead(); curr != nullptr; curr = curr->getNext())
 	{
-		file << requests[i].getID() << "|"
-		     << requests[i].getRequesterID() << "|"
-		     << requests[i].getAssignedTechnicianID() << "|"
-		     << requests[i].getCampusLocation() << "|"
-		     << requests[i].getProblemCategory() << "|"
-		     << requests[i].getRequestDescription() << "|"
-		     << requests[i].getStatus() << "|"
-		     << requests[i].getDateAssignedToTechnician() << "|"
-		     << requests[i].getTargetCompletionDate() << "|"
-		     << requests[i].getRepairNotes() << "\n";
+		Request* req = curr->getData();
+		file << req->getID() << "|"
+		     << req->getRequesterID() << "|"
+		     << req->getAssignedTechnicianID() << "|"
+		     << req->getCampusLocation() << "|"
+		     << req->getProblemCategory() << "|"
+		     << req->getRequestDescription() << "|"
+		     << req->getStatus() << "|"
+		     << req->getDateAssignedToTechnician() << "|"
+		     << req->getTargetCompletionDate() << "|"
+		     << req->getRepairNotes() << "\n";
 	}
 	file.close();
 	return true;
@@ -389,12 +353,13 @@ bool DataManager::saveChangeLogs()
 		return false;
 	}
 
-	for (size_t i = 0; i < changeLogs.size(); i++)
+	for (ChangeLogNode* curr = changeLogs.getHead(); curr != nullptr; curr = curr->getNext())
 	{
-		file << changeLogs[i]->getRequestId() << "|"
-		     << changeLogs[i]->getDate() << "|"
-		     << changeLogs[i]->getStatus() << "|"
-		     << changeLogs[i]->getRepairNotes() << "\n";
+		ChangeLog* log = curr->getData();
+		file << log->getRequestId() << "|"
+		     << log->getDate() << "|"
+		     << log->getStatus() << "|"
+		     << log->getRepairNotes() << "\n";
 	}
 	file.close();
 	return true;
@@ -409,9 +374,9 @@ bool DataManager::saveCampusLocations()
 		return false;
 	}
 
-	for (size_t i = 0; i < campusLocations.size(); i++)
+	for (StringNode* curr = campusLocations.getHead(); curr != nullptr; curr = curr->getNext())
 	{
-		file << campusLocations[i] << "\n";
+		file << curr->getData() << "\n";
 	}
 	file.close();
 	return true;
@@ -426,25 +391,25 @@ bool DataManager::saveProblemCategories()
 		return false;
 	}
 
-	for (size_t i = 0; i < problemCategories.size(); i++)
+	for (StringNode* curr = problemCategories.getHead(); curr != nullptr; curr = curr->getNext())
 	{
-		file << problemCategories[i] << "\n";
+		file << curr->getData() << "\n";
 	}
 	file.close();
 	return true;
 }
 
-vector<Requester> DataManager::getRequesters()
+RequesterLinkedList DataManager::getRequesters()
 {
 	return requesters;
 }
 
-vector<Technician> DataManager::getTechnicians()
+TechnicianLinkedList DataManager::getTechnicians()
 {
 	return technicians;
 }
 
-vector<Request> DataManager::getRequests()
+RequestLinkedList DataManager::getRequests()
 {
 	return requests;
 }
@@ -454,66 +419,39 @@ Queue* DataManager::getRequestQueue()
 	return requestQueue;
 }
 
-LinkedList* DataManager::getChangeLogList()
-{
-	return changeLogList;
-}
-
-vector<ChangeLog*> DataManager::getChangeLogs()
+ChangeLogLinkedList DataManager::getChangeLogs()
 {
 	return changeLogs;
 }
 
-vector<string> DataManager::getCampusLocations()
+StringLinkedList DataManager::getCampusLocations()
 {
 	return campusLocations;
 }
 
-vector<string> DataManager::getProblemCategories()
+StringLinkedList DataManager::getProblemCategories()
 {
 	return problemCategories;
 }
 
-void DataManager::setRequesters(vector<Requester> requesters)
+void DataManager::setRequesters(const RequesterLinkedList& requesters)
 {
 	this->requesters = requesters;
 }
 
-void DataManager::setTechnicians(vector<Technician> technicians)
+void DataManager::setTechnicians(const TechnicianLinkedList& technicians)
 {
 	this->technicians = technicians;
 }
 
-void DataManager::setRequests(vector<Request> requests)
+void DataManager::setRequests(const RequestLinkedList& requests)
 {
 	this->requests = requests;
 }
 
-void DataManager::setChangeLogs(vector<ChangeLog*> changeLogs)
+void DataManager::setChangeLogs(const ChangeLogLinkedList& changeLogs)
 {
 	this->changeLogs = changeLogs;
-
-	while (changeLogList != nullptr)
-	{
-		LinkedList* tmp = changeLogList->getNext();
-		delete changeLogList;
-		changeLogList = tmp;
-	}
-
-	LinkedList* tail = nullptr;
-	for (size_t i = 0; i < this->changeLogs.size(); i++)
-	{
-		if (changeLogList == nullptr)
-		{
-			changeLogList = new LinkedList(this->changeLogs[i]);
-			tail = changeLogList;
-		}
-		else
-		{
-			tail->updateNext(new LinkedList(this->changeLogs[i]));
-			tail = tail->getNext();
-		}
-	}
 }
 
 void DataManager::addChangeLog(int requestId, string status, string repairNotes, string date)
@@ -524,31 +462,17 @@ void DataManager::addChangeLog(int requestId, string status, string repairNotes,
 	}
 
 	ChangeLog* log = new ChangeLog(date, requestId, status, repairNotes);
-	changeLogs.push_back(log);
-
-	if (changeLogList == nullptr)
-	{
-		changeLogList = new LinkedList(log);
-	}
-	else
-	{
-		LinkedList* tail = changeLogList;
-		while (tail->getNext() != nullptr)
-		{
-			tail = tail->getNext();
-		}
-		tail->updateNext(new LinkedList(log));
-	}
+	changeLogs.append(log);
 
 	saveChangeLogs();
 }
 
-void DataManager::setCampusLocations(vector<string> campusLocations)
+void DataManager::setCampusLocations(const StringLinkedList& campusLocations)
 {
 	this->campusLocations = campusLocations;
 }
 
-void DataManager::setProblemCategories(vector<string> problemCategories)
+void DataManager::setProblemCategories(const StringLinkedList& problemCategories)
 {
 	this->problemCategories = problemCategories;
 }
@@ -582,4 +506,3 @@ void DataManager::setProblemCategoriesFilePath(string path)
 {
 	problemCategoriesFilePath = path;
 }
-

@@ -1,22 +1,24 @@
 #ifndef LINKED_LIST_H
 #define LINKED_LIST_H
 
-#include "changelog/ChangeLog.h"
+#include "Node.h"
 
 class LinkedList
 {
 public:
-    LinkedList();
-	LinkedList(ChangeLog* val);
+	LinkedList();
+	virtual ~LinkedList();
 
-	ChangeLog* getVal();
-	LinkedList* getNext();
-	void updateVal(ChangeLog* val);
-	void updateNext(LinkedList* next);
+	int size() const;
+	bool empty() const;
+	virtual void clear();
 
-private:
-	LinkedList* next;
-	ChangeLog* val;
+	Node* getHeadNode() const;
+
+protected:
+	Node* head;
+	Node* tail;
+	int listSize;
 };
 
 #endif

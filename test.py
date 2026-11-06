@@ -1,39 +1,9 @@
-#!/usr/bin/env python3
-"""
-================================================================================
-SCFMS (Smart Campus Facility Maintenance System) Comprehensive Test Suite
-================================================================================
-Course: KIE1008 Programming II - 2026/2027 Semester I
-Target Application: main.exe
-
-Tests all requirements from the assignment specification:
-1. Inheritance & Role-Based Interfaces (Facility Manager, Technician, Requester)
-2. Advanced Data Structures:
-   - Queue (FIFO pending requests processing)
-   - Linked List (Service history changelogs)
-3. Maintenance Management Interface:
-   - Request lifecycle: Submit -> FIFO Assign -> In Progress -> Complete / Cancel
-   - Technicians and Users (Requesters) registration and removal
-   - Campus locations & problem categories management
-   - Request search & filtering (category, location, overdue)
-4. Data Persistence (File I/O across restarts)
-5. Exception & Error Handling:
-   - Duplicate IDs / non-existent users
-   - Assigning with empty queue / invalid technician ID
-   - Unauthorized access across roles and tickets
-   - Invalid status changes & cancellation guards
-   - Invalid menu inputs and bound checks
-================================================================================
-"""
-
 import os
 import sys
 import shutil
 import subprocess
-import time
 from typing import List, Tuple, Dict, Any
 
-# ANSI Color Codes
 GREEN = "\033[92m"
 RED = "\033[91m"
 YELLOW = "\033[93m"

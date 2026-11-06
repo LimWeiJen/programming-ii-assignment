@@ -3,7 +3,6 @@
 #include "../../request/Request.h"
 #include <iostream>
 #include <iomanip>
-#include <vector>
 #include <string>
 
 using namespace std;
@@ -25,16 +24,17 @@ void Technician::displayMenu()
 
 void Technician::getCurrentAssignedRequests()
 {
-	vector<Request> requests = dataManager->getRequests();
+	RequestLinkedList requests = dataManager->getRequests();
 	bool found = false;
 
 	cout << "\n--- Your Assigned Requests ---\n";
-	for (int i = 0; i < requests.size(); i++)
+	for (RequestNode* curr = requests.getHead(); curr != nullptr; curr = curr->getNext())
 	{
-		if (requests[i].getAssignedTechnicianID() == this->getID())
+		Request* req = curr->getData();
+		if (req->getAssignedTechnicianID() == this->getID())
 		{
 			// Do not show completed or cancelled requests
-			if (requests[i].getStatus() == "COMPLETED" || requests[i].getStatus() == "CANCELLED")
+			if (req->getStatus() == "COMPLETED" || req->getStatus() == "CANCELLED")
 			{
 				continue;
 			}
@@ -50,12 +50,12 @@ void Technician::getCurrentAssignedRequests()
 				cout << "----------------------------------------------------------------------------------------------------\n";
 				found = true;
 			}
-			cout << left << setw(6) << ("#" + to_string(requests[i].getID())) << " | "
-			     << setw(16) << requests[i].getStatus() << " | "
-			     << setw(20) << requests[i].getCampusLocation() << " | "
-			     << setw(16) << requests[i].getProblemCategory() << " | "
-			     << setw(14) << (requests[i].getTargetCompletionDate().empty() ? "N/A" : requests[i].getTargetCompletionDate()) << " | "
-			     << (requests[i].getDateAssignedToTechnician().empty() ? "N/A" : requests[i].getDateAssignedToTechnician()) << "\n";
+			cout << left << setw(6) << ("#" + to_string(req->getID())) << " | "
+			     << setw(16) << req->getStatus() << " | "
+			     << setw(20) << req->getCampusLocation() << " | "
+			     << setw(16) << req->getProblemCategory() << " | "
+			     << setw(14) << (req->getTargetCompletionDate().empty() ? "N/A" : req->getTargetCompletionDate()) << " | "
+			     << (req->getDateAssignedToTechnician().empty() ? "N/A" : req->getDateAssignedToTechnician()) << "\n";
 		}
 	}
 
@@ -79,24 +79,25 @@ void Technician::updateRequestStatus()
 		return;
 	}
 
-	vector<Request> requests = dataManager->getRequests();
-	for (int i = 0; i < requests.size(); i++)
+	RequestLinkedList requests = dataManager->getRequests();
+	for (RequestNode* curr = requests.getHead(); curr != nullptr; curr = curr->getNext())
 	{
-		if (requests[i].getID() == reqId)
+		Request* req = curr->getData();
+		if (req->getID() == reqId)
 		{
-			if (requests[i].getAssignedTechnicianID() != this->getID())
+			if (req->getAssignedTechnicianID() != this->getID())
 			{
 				cout << "[Error] Unauthorized. This request is not assigned to you.\n";
 				return;
 			}
 
-			if (requests[i].getStatus() == "COMPLETED" || requests[i].getStatus() == "CANCELLED")
+			if (req->getStatus() == "COMPLETED" || req->getStatus() == "CANCELLED")
 			{
-				cout << "[Error] Request #" << reqId << " is already " << requests[i].getStatus() << " and cannot be updated.\n";
+				cout << "[Error] Request #" << reqId << " is already " << req->getStatus() << " and cannot be updated.\n";
 				return;
 			}
 
-			cout << "\nCurrent Status: " << requests[i].getStatus() << "\n";
+			cout << "\nCurrent Status: " << req->getStatus() << "\n";
 			cout << "Select New Status:\n";
 			cout << "1. IN_PROGRESS\n";
 			cout << "2. PENDING_PARTS\n";
@@ -121,7 +122,7 @@ void Technician::updateRequestStatus()
 				return;
 			}
 
-			requests[i].setStatus(newStatus);
+			req->setStatus(newStatus);
 			dataManager->setRequests(requests);
 			dataManager->saveRequests();
 
@@ -149,24 +150,25 @@ void Technician::addRepairNotes()
 		return;
 	}
 
-	vector<Request> requests = dataManager->getRequests();
-	for (int i = 0; i < requests.size(); i++)
+	RequestLinkedList requests = dataManager->getRequests();
+	for (RequestNode* curr = requests.getHead(); curr != nullptr; curr = curr->getNext())
 	{
-		if (requests[i].getID() == reqId)
+		Request* req = curr->getData();
+		if (req->getID() == reqId)
 		{
-			if (requests[i].getAssignedTechnicianID() != this->getID())
+			if (req->getAssignedTechnicianID() != this->getID())
 			{
 				cout << "[Error] Unauthorized. This request is not assigned to you.\n";
 				return;
 			}
 
-			if (requests[i].getStatus() == "CANCELLED")
+			if (req->getStatus() == "CANCELLED")
 			{
 				cout << "[Error] Request #" << reqId << " has been cancelled. Cannot add repair notes.\n";
 				return;
 			}
 
-			string existingNotes = requests[i].getRepairNotes();
+			string existingNotes = req->getRepairNotes();
 			if (!existingNotes.empty())
 			{
 				cout << "Current Notes: " << existingNotes << "\n";
@@ -185,17 +187,17 @@ void Technician::addRepairNotes()
 
 			if (!existingNotes.empty())
 			{
-				requests[i].setRepairNotes(existingNotes + "; " + newNotes);
+				req->setRepairNotes(existingNotes + "; " + newNotes);
 			}
 			else
 			{
-				requests[i].setRepairNotes(newNotes);
+				req->setRepairNotes(newNotes);
 			}
 
 			dataManager->setRequests(requests);
 			dataManager->saveRequests();
 
-			dataManager->addChangeLog(reqId, requests[i].getStatus(), newNotes);
+			dataManager->addChangeLog(reqId, req->getStatus(), newNotes);
 
 			cout << "\n[Success] Repair notes added to Request #" << reqId << ".\n";
 			return;
