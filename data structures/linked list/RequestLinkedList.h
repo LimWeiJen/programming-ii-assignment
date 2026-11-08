@@ -4,18 +4,20 @@
 #include "LinkedList.h"
 #include "../../classes/request/Request.h"
 
-class RequestNode : public Node
+class RequestNode
 {
 public:
 	RequestNode(const Request& req);
-	virtual ~RequestNode();
+	~RequestNode();
 
 	Request* getData();
 	const Request* getData() const;
 	RequestNode* getNext() const;
+	void setNext(RequestNode* nextNode);
 
 private:
 	Request data;
+	RequestNode* next;
 };
 
 class RequestLinkedList : public LinkedList
@@ -26,13 +28,17 @@ public:
 	RequestLinkedList& operator=(const RequestLinkedList& other);
 	virtual ~RequestLinkedList();
 
+	virtual void clear() override;
 	void append(const Request& req);
 	void push_back(const Request& req);
 	RequestNode* getHead() const;
 
 	Request* findById(int id);
 	bool removeById(int id);
+
+private:
+	RequestNode* head;
+	RequestNode* tail;
 };
 
 #endif
-

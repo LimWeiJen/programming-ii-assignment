@@ -8,7 +8,6 @@ g++ -std=c++17 ^
   "classes/person/technician/Technician.cpp" ^
   "classes/request/Request.cpp" ^
   "data/DataManager.cpp" ^
-  "data structures/linked list/Node.cpp" ^
   "data structures/linked list/LinkedList.cpp" ^
   "data structures/linked list/RequestLinkedList.cpp" ^
   "data structures/linked list/TechnicianLinkedList.cpp" ^
@@ -27,4 +26,3 @@ if %errorlevel% equ 0 (
     echo.
     echo [ERROR] Compilation failed.
 )
-

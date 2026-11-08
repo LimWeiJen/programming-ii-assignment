@@ -1,6 +1,6 @@
 #include "TechnicianLinkedList.h"
 
-TechnicianNode::TechnicianNode(const Technician& tech) : Node(), data(tech) {}
+TechnicianNode::TechnicianNode(const Technician& tech) : data(tech), next(nullptr) {}
 
 TechnicianNode::~TechnicianNode() {}
 
@@ -16,12 +16,17 @@ const Technician* TechnicianNode::getData() const
 
 TechnicianNode* TechnicianNode::getNext() const
 {
-	return static_cast<TechnicianNode*>(next);
+	return next;
 }
 
-TechnicianLinkedList::TechnicianLinkedList() : LinkedList() {}
+void TechnicianNode::setNext(TechnicianNode* nextNode)
+{
+	this->next = nextNode;
+}
 
-TechnicianLinkedList::TechnicianLinkedList(const TechnicianLinkedList& other) : LinkedList()
+TechnicianLinkedList::TechnicianLinkedList() : LinkedList(), head(nullptr), tail(nullptr) {}
+
+TechnicianLinkedList::TechnicianLinkedList(const TechnicianLinkedList& other) : LinkedList(), head(nullptr), tail(nullptr)
 {
 	for (TechnicianNode* curr = other.getHead(); curr != nullptr; curr = curr->getNext())
 	{
@@ -47,6 +52,20 @@ TechnicianLinkedList::~TechnicianLinkedList()
 	clear();
 }
 
+void TechnicianLinkedList::clear()
+{
+	TechnicianNode* current = head;
+	while (current != nullptr)
+	{
+		TechnicianNode* nextNode = current->getNext();
+		delete current;
+		current = nextNode;
+	}
+	head = nullptr;
+	tail = nullptr;
+	listSize = 0;
+}
+
 void TechnicianLinkedList::append(const Technician& tech)
 {
 	TechnicianNode* newNode = new TechnicianNode(tech);
@@ -70,7 +89,7 @@ void TechnicianLinkedList::push_back(const Technician& tech)
 
 TechnicianNode* TechnicianLinkedList::getHead() const
 {
-	return static_cast<TechnicianNode*>(head);
+	return head;
 }
 
 Technician* TechnicianLinkedList::findById(int id)
@@ -87,7 +106,7 @@ Technician* TechnicianLinkedList::findById(int id)
 
 bool TechnicianLinkedList::removeById(int id)
 {
-	TechnicianNode* curr = getHead();
+	TechnicianNode* curr = head;
 	TechnicianNode* prev = nullptr;
 
 	while (curr != nullptr)
@@ -113,4 +132,3 @@ bool TechnicianLinkedList::removeById(int id)
 	}
 	return false;
 }
-

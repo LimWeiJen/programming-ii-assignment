@@ -1,6 +1,6 @@
 #include "RequesterLinkedList.h"
 
-RequesterNode::RequesterNode(const Requester& req) : Node(), data(req) {}
+RequesterNode::RequesterNode(const Requester& req) : data(req), next(nullptr) {}
 
 RequesterNode::~RequesterNode() {}
 
@@ -16,12 +16,17 @@ const Requester* RequesterNode::getData() const
 
 RequesterNode* RequesterNode::getNext() const
 {
-	return static_cast<RequesterNode*>(next);
+	return next;
 }
 
-RequesterLinkedList::RequesterLinkedList() : LinkedList() {}
+void RequesterNode::setNext(RequesterNode* nextNode)
+{
+	this->next = nextNode;
+}
 
-RequesterLinkedList::RequesterLinkedList(const RequesterLinkedList& other) : LinkedList()
+RequesterLinkedList::RequesterLinkedList() : LinkedList(), head(nullptr), tail(nullptr) {}
+
+RequesterLinkedList::RequesterLinkedList(const RequesterLinkedList& other) : LinkedList(), head(nullptr), tail(nullptr)
 {
 	for (RequesterNode* curr = other.getHead(); curr != nullptr; curr = curr->getNext())
 	{
@@ -47,6 +52,20 @@ RequesterLinkedList::~RequesterLinkedList()
 	clear();
 }
 
+void RequesterLinkedList::clear()
+{
+	RequesterNode* current = head;
+	while (current != nullptr)
+	{
+		RequesterNode* nextNode = current->getNext();
+		delete current;
+		current = nextNode;
+	}
+	head = nullptr;
+	tail = nullptr;
+	listSize = 0;
+}
+
 void RequesterLinkedList::append(const Requester& req)
 {
 	RequesterNode* newNode = new RequesterNode(req);
@@ -70,7 +89,7 @@ void RequesterLinkedList::push_back(const Requester& req)
 
 RequesterNode* RequesterLinkedList::getHead() const
 {
-	return static_cast<RequesterNode*>(head);
+	return head;
 }
 
 Requester* RequesterLinkedList::findById(int id)
@@ -87,7 +106,7 @@ Requester* RequesterLinkedList::findById(int id)
 
 bool RequesterLinkedList::removeById(int id)
 {
-	RequesterNode* curr = getHead();
+	RequesterNode* curr = head;
 	RequesterNode* prev = nullptr;
 
 	while (curr != nullptr)
@@ -113,4 +132,3 @@ bool RequesterLinkedList::removeById(int id)
 	}
 	return false;
 }
-

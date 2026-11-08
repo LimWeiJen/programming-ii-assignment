@@ -1,8 +1,6 @@
 #ifndef LINKED_LIST_H
 #define LINKED_LIST_H
 
-#include "Node.h"
-
 class LinkedList
 {
 public:
@@ -13,11 +11,7 @@ public:
 	bool empty() const;
 	virtual void clear();
 
-	Node* getHeadNode() const;
-
 protected:
-	Node* head;
-	Node* tail;
 	int listSize;
 };
 

@@ -1,6 +1,6 @@
 #include "StringLinkedList.h"
 
-StringNode::StringNode(const string& str) : Node(), data(str) {}
+StringNode::StringNode(const string& str) : data(str), next(nullptr) {}
 
 StringNode::~StringNode() {}
 
@@ -16,12 +16,17 @@ const string& StringNode::getData() const
 
 StringNode* StringNode::getNext() const
 {
-	return static_cast<StringNode*>(next);
+	return next;
 }
 
-StringLinkedList::StringLinkedList() : LinkedList() {}
+void StringNode::setNext(StringNode* nextNode)
+{
+	this->next = nextNode;
+}
 
-StringLinkedList::StringLinkedList(const StringLinkedList& other) : LinkedList()
+StringLinkedList::StringLinkedList() : LinkedList(), head(nullptr), tail(nullptr) {}
+
+StringLinkedList::StringLinkedList(const StringLinkedList& other) : LinkedList(), head(nullptr), tail(nullptr)
 {
 	for (StringNode* curr = other.getHead(); curr != nullptr; curr = curr->getNext())
 	{
@@ -47,6 +52,20 @@ StringLinkedList::~StringLinkedList()
 	clear();
 }
 
+void StringLinkedList::clear()
+{
+	StringNode* current = head;
+	while (current != nullptr)
+	{
+		StringNode* nextNode = current->getNext();
+		delete current;
+		current = nextNode;
+	}
+	head = nullptr;
+	tail = nullptr;
+	listSize = 0;
+}
+
 void StringLinkedList::append(const string& str)
 {
 	StringNode* newNode = new StringNode(str);
@@ -70,7 +89,7 @@ void StringLinkedList::push_back(const string& str)
 
 StringNode* StringLinkedList::getHead() const
 {
-	return static_cast<StringNode*>(head);
+	return head;
 }
 
 string StringLinkedList::getAt(int index) const
@@ -91,7 +110,7 @@ string StringLinkedList::getAt(int index) const
 bool StringLinkedList::removeAt(int index)
 {
 	if (index < 0 || index >= listSize) return false;
-	StringNode* curr = getHead();
+	StringNode* curr = head;
 	StringNode* prev = nullptr;
 	int count = 0;
 
@@ -122,7 +141,7 @@ bool StringLinkedList::removeAt(int index)
 
 bool StringLinkedList::remove(const string& str)
 {
-	StringNode* curr = getHead();
+	StringNode* curr = head;
 	StringNode* prev = nullptr;
 
 	while (curr != nullptr)
@@ -160,4 +179,3 @@ bool StringLinkedList::contains(const string& str) const
 	}
 	return false;
 }
-

@@ -1,6 +1,6 @@
 #include "ChangeLogLinkedList.h"
 
-ChangeLogNode::ChangeLogNode(ChangeLog* log) : Node(), data(log) {}
+ChangeLogNode::ChangeLogNode(ChangeLog* log) : data(log), next(nullptr) {}
 
 ChangeLogNode::~ChangeLogNode()
 {
@@ -23,12 +23,17 @@ const ChangeLog* ChangeLogNode::getData() const
 
 ChangeLogNode* ChangeLogNode::getNext() const
 {
-	return static_cast<ChangeLogNode*>(next);
+	return next;
 }
 
-ChangeLogLinkedList::ChangeLogLinkedList() : LinkedList() {}
+void ChangeLogNode::setNext(ChangeLogNode* nextNode)
+{
+	this->next = nextNode;
+}
 
-ChangeLogLinkedList::ChangeLogLinkedList(const ChangeLogLinkedList& other) : LinkedList()
+ChangeLogLinkedList::ChangeLogLinkedList() : LinkedList(), head(nullptr), tail(nullptr) {}
+
+ChangeLogLinkedList::ChangeLogLinkedList(const ChangeLogLinkedList& other) : LinkedList(), head(nullptr), tail(nullptr)
 {
 	for (ChangeLogNode* curr = other.getHead(); curr != nullptr; curr = curr->getNext())
 	{
@@ -64,6 +69,20 @@ ChangeLogLinkedList::~ChangeLogLinkedList()
 	clear();
 }
 
+void ChangeLogLinkedList::clear()
+{
+	ChangeLogNode* current = head;
+	while (current != nullptr)
+	{
+		ChangeLogNode* nextNode = current->getNext();
+		delete current;
+		current = nextNode;
+	}
+	head = nullptr;
+	tail = nullptr;
+	listSize = 0;
+}
+
 void ChangeLogLinkedList::append(ChangeLog* log)
 {
 	ChangeLogNode* newNode = new ChangeLogNode(log);
@@ -87,6 +106,5 @@ void ChangeLogLinkedList::push_back(ChangeLog* log)
 
 ChangeLogNode* ChangeLogLinkedList::getHead() const
 {
-	return static_cast<ChangeLogNode*>(head);
+	return head;
 }
-

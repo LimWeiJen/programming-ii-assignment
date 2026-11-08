@@ -1,6 +1,6 @@
 #include "RequestLinkedList.h"
 
-RequestNode::RequestNode(const Request& req) : Node(), data(req) {}
+RequestNode::RequestNode(const Request& req) : data(req), next(nullptr) {}
 
 RequestNode::~RequestNode() {}
 
@@ -16,12 +16,17 @@ const Request* RequestNode::getData() const
 
 RequestNode* RequestNode::getNext() const
 {
-	return static_cast<RequestNode*>(next);
+	return next;
 }
 
-RequestLinkedList::RequestLinkedList() : LinkedList() {}
+void RequestNode::setNext(RequestNode* nextNode)
+{
+	this->next = nextNode;
+}
 
-RequestLinkedList::RequestLinkedList(const RequestLinkedList& other) : LinkedList()
+RequestLinkedList::RequestLinkedList() : LinkedList(), head(nullptr), tail(nullptr) {}
+
+RequestLinkedList::RequestLinkedList(const RequestLinkedList& other) : LinkedList(), head(nullptr), tail(nullptr)
 {
 	for (RequestNode* curr = other.getHead(); curr != nullptr; curr = curr->getNext())
 	{
@@ -47,6 +52,20 @@ RequestLinkedList::~RequestLinkedList()
 	clear();
 }
 
+void RequestLinkedList::clear()
+{
+	RequestNode* current = head;
+	while (current != nullptr)
+	{
+		RequestNode* nextNode = current->getNext();
+		delete current;
+		current = nextNode;
+	}
+	head = nullptr;
+	tail = nullptr;
+	listSize = 0;
+}
+
 void RequestLinkedList::append(const Request& req)
 {
 	RequestNode* newNode = new RequestNode(req);
@@ -70,7 +89,7 @@ void RequestLinkedList::push_back(const Request& req)
 
 RequestNode* RequestLinkedList::getHead() const
 {
-	return static_cast<RequestNode*>(head);
+	return head;
 }
 
 Request* RequestLinkedList::findById(int id)
@@ -87,7 +106,7 @@ Request* RequestLinkedList::findById(int id)
 
 bool RequestLinkedList::removeById(int id)
 {
-	RequestNode* curr = getHead();
+	RequestNode* curr = head;
 	RequestNode* prev = nullptr;
 
 	while (curr != nullptr)
@@ -113,4 +132,3 @@ bool RequestLinkedList::removeById(int id)
 	}
 	return false;
 }
-
