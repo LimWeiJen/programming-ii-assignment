@@ -1,0 +1,1356 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Smart Campus Facility Maintenance System - Presentation</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      background-color: #0b0f19;
+      color: #f1f5f9;
+      height: 100vh;
+      width: 100vw;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      user-select: none;
+    }
+
+    /* Fullscreen Slide Canvas */
+    .slide-canvas {
+      width: 100%;
+      height: 100%;
+      max-width: 1200px;
+      max-height: 800px;
+      padding: 60px 80px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      position: relative;
+    }
+
+    .slide {
+      display: none;
+      width: 100%;
+      height: 100%;
+      flex-direction: column;
+      justify-content: center;
+      animation: fadeIn 0.25s ease-out forwards;
+    }
+
+    .slide.active {
+      display: flex;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Slide 2 Minimalist Folder Layout & Vector Animations */
+    .folders-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 44px;
+      width: 100%;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .folder-col {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+    }
+
+    .folder-heading {
+      font-size: 2.2rem;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      color: #ffffff;
+      margin-bottom: 24px;
+      text-transform: lowercase;
+    }
+
+    .folder-graphic {
+      width: 100%;
+      max-width: 320px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    @keyframes floatSlow {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-7px); }
+    }
+
+    @keyframes floatSlowReverse {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(6px); }
+    }
+
+    @keyframes dashFlow {
+      to { stroke-dashoffset: -40; }
+    }
+
+    @keyframes dashFlowReverse {
+      to { stroke-dashoffset: 40; }
+    }
+
+    @keyframes pulseSubtle {
+      0%, 100% { opacity: 0.85; filter: drop-shadow(0 0 2px rgba(56, 189, 248, 0.2)); }
+      50% { opacity: 1; filter: drop-shadow(0 0 8px rgba(56, 189, 248, 0.5)); }
+    }
+
+    @keyframes scalePulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.06); }
+    }
+
+    @keyframes pipePulse {
+      0%, 100% { opacity: 0.45; stroke: #38bdf8; }
+      50% { opacity: 1; stroke: #67e8f9; filter: drop-shadow(0 0 5px #38bdf8); }
+    }
+
+    @keyframes popHead {
+      0%, 100% { transform: translate(155px, 28px) scale(1); }
+      50% { transform: translate(163px, 28px) scale(1.08); filter: drop-shadow(0 0 8px rgba(56, 189, 248, 0.7)); }
+    }
+
+    @keyframes spinSlow {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+
+    @keyframes glowPulse {
+      0%, 100% { opacity: 0.35; filter: drop-shadow(0 0 4px #38bdf8); }
+      50% { opacity: 1; filter: drop-shadow(0 0 12px #38bdf8); }
+    }
+
+    @keyframes scalePulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+    }
+
+    @keyframes travelScan {
+      0% { transform: translateY(0); opacity: 0; }
+      20% { opacity: 1; }
+      80% { opacity: 1; }
+      100% { transform: translateY(80px); opacity: 0; }
+    }
+
+    .anim-float { animation: floatSlow 4s ease-in-out infinite; }
+    .anim-float-reverse { animation: floatSlowReverse 4s ease-in-out infinite; }
+    .anim-pulse-subtle { animation: pulseSubtle 3s ease-in-out infinite; }
+    .anim-pop-head { animation: popHead 2s ease-in-out infinite; }
+    .anim-pipe-pulse { animation: pipePulse 1.8s ease-in-out infinite; }
+    .anim-spin { animation: spinSlow 12s linear infinite; transform-origin: center; }
+    .anim-glow { animation: glowPulse 2.5s ease-in-out infinite; }
+    .anim-scale {
+      transform-box: fill-box;
+      transform-origin: center;
+      animation: scalePulse 2.5s ease-in-out infinite;
+    }
+    .anim-scan { animation: travelScan 2.5s ease-in-out infinite; }
+    .dash-flow-fast { animation: dashFlow 1.4s linear infinite; }
+    .dash-flow-reverse { animation: dashFlowReverse 1.4s linear infinite; }
+
+    .slide-header-title {
+      font-size: 2.2rem;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      color: #ffffff;
+      margin-bottom: 20px;
+      text-transform: lowercase;
+      text-align: center;
+    }
+
+    .slide-svg-wrap {
+      width: 100%;
+      max-width: 1050px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    /* Minimalist Typography */
+    .kicker {
+      font-size: 0.85rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.18em;
+      color: #38bdf8;
+      margin-bottom: 12px;
+    }
+
+    .main-title {
+      font-size: 3rem;
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      line-height: 1.15;
+      color: #ffffff;
+      margin-bottom: 10px;
+    }
+
+    .subtitle {
+      font-size: 1.2rem;
+      font-weight: 400;
+      color: #94a3b8;
+      line-height: 1.5;
+      margin-bottom: 48px;
+      max-width: 850px;
+    }
+
+    /* Custom Positioning & Column Layouts (No Cards) */
+    .cols-3 {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 50px;
+    }
+
+    .cols-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 60px;
+    }
+
+    .cols-4 {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 36px;
+    }
+
+    .col {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .section-label {
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: #ffffff;
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .section-tag {
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: #818cf8;
+      margin-bottom: 6px;
+    }
+
+    .section-desc {
+      font-size: 0.95rem;
+      color: #94a3b8;
+      line-height: 1.6;
+      margin-bottom: 16px;
+    }
+
+    .bullet-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .bullet-list li {
+      font-size: 0.92rem;
+      color: #cbd5e1;
+      line-height: 1.5;
+      position: relative;
+      padding-left: 18px;
+    }
+
+    .bullet-list li::before {
+      content: "—";
+      position: absolute;
+      left: 0;
+      color: #38bdf8;
+      font-weight: bold;
+    }
+
+    .bullet-list li strong {
+      color: #ffffff;
+      font-weight: 600;
+    }
+
+    /* Typographic Flow & Arrows */
+    .flow-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 40px;
+      padding-bottom: 30px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .flow-node {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+    }
+
+    .flow-node-title {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: #ffffff;
+    }
+
+    .flow-node-sub {
+      font-size: 0.8rem;
+      color: #38bdf8;
+      margin-top: 4px;
+    }
+
+    .flow-arrow {
+      font-size: 1.5rem;
+      color: #64748b;
+      font-weight: 300;
+    }
+
+    /* Horizontal Steps */
+    .steps-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 24px;
+    }
+
+    .step-item {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .step-index {
+      font-size: 2rem;
+      font-weight: 800;
+      color: #38bdf8;
+      line-height: 1;
+      margin-bottom: 12px;
+    }
+
+    .step-header {
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: #ffffff;
+      margin-bottom: 6px;
+    }
+
+    .step-role {
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: #818cf8;
+      margin-bottom: 8px;
+    }
+
+    .step-body {
+      font-size: 0.88rem;
+      color: #94a3b8;
+      line-height: 1.5;
+    }
+
+    /* Faint slide indicator */
+    .slide-indicator {
+      position: fixed;
+      bottom: 24px;
+      right: 32px;
+      font-size: 0.85rem;
+      font-family: monospace;
+      color: #475569;
+      letter-spacing: 0.05em;
+    }
+
+    /* Print Setup */
+    @media print {
+      body {
+        background: #ffffff !important;
+        color: #0f172a !important;
+      }
+      .slide-canvas {
+        max-width: none;
+        max-height: none;
+        padding: 40px;
+      }
+      .slide {
+        display: flex !important;
+        page-break-after: always;
+        height: 100vh;
+      }
+      .slide-indicator {
+        display: none;
+      }
+      .main-title, .section-label, .step-header, .bullet-list li strong {
+        color: #0f172a !important;
+      }
+      .subtitle, .section-desc, .step-body, .bullet-list li {
+        color: #475569 !important;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="slide-canvas">
+
+    <!-- SLIDE 1: Title -->
+    <div class="slide active">
+      <div class="kicker">KIE1008 Programming II • Group Assignment</div>
+      <h1 class="main-title" style="font-size: 3.6rem; max-width: 950px;">Smart Campus Facility Maintenance System</h1>
+    </div>
+
+    <!-- SLIDE 2: File Structure -->
+    <div class="slide">
+      <div class="folders-grid">
+
+        <!-- Column 1: classes -->
+        <div class="folder-col">
+          <div class="folder-heading">classes</div>
+          <div class="folder-graphic">
+            <svg viewBox="0 0 320 440" width="100%" height="420" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <!-- BASE CLASS: Person (Top Center) -->
+              <g transform="translate(90, 20)">
+                <g class="anim-float">
+                  <rect x="0" y="0" width="140" height="70" rx="14" fill="rgba(56, 189, 248, 0.1)" stroke="#38bdf8" stroke-width="2"/>
+                  <circle cx="70" cy="28" r="11" fill="#38bdf8"/>
+                  <path d="M 52 54 C 52 42 60 40 70 40 C 80 40 88 42 88 54" stroke="#38bdf8" stroke-width="2.5" stroke-linecap="round"/>
+                  <circle cx="102" cy="22" r="5" fill="#fbbf24"/>
+                </g>
+              </g>
+
+              <!-- INHERITANCE BRANCHES -->
+              <!-- Left Branch to Manager -->
+              <path d="M 130 95 C 130 135 55 125 55 160" stroke="#334155" stroke-width="2" fill="none" stroke-dasharray="4 4"/>
+              <path d="M 130 95 C 130 135 55 125 55 160" stroke="#38bdf8" stroke-width="2" fill="none" stroke-dasharray="6 8" class="dash-flow-fast"/>
+
+              <!-- Center Branch to Technician -->
+              <path d="M 160 95 L 160 160" stroke="#334155" stroke-width="2" fill="none" stroke-dasharray="4 4"/>
+              <path d="M 160 95 L 160 160" stroke="#818cf8" stroke-width="2" fill="none" stroke-dasharray="6 8" class="dash-flow-fast"/>
+
+              <!-- Right Branch to Requester -->
+              <path d="M 190 95 C 190 135 265 125 265 160" stroke="#334155" stroke-width="2" fill="none" stroke-dasharray="4 4"/>
+              <path d="M 190 95 C 190 135 265 125 265 160" stroke="#34d399" stroke-width="2" fill="none" stroke-dasharray="6 8" class="dash-flow-fast"/>
+
+              <!-- DERIVED 1: Facility Manager (Left) -->
+              <g transform="translate(15, 160)">
+                <rect x="0" y="0" width="80" height="80" rx="12" fill="rgba(56, 189, 248, 0.08)" stroke="#38bdf8" stroke-width="1.8"/>
+                <circle cx="40" cy="30" r="10" fill="#38bdf8"/>
+                <path d="M 26 56 C 26 46 32 44 40 44 C 48 44 54 46 54 56" stroke="#38bdf8" stroke-width="2" stroke-linecap="round"/>
+                <polygon points="60,18 62,23 67,23 63,26 65,31 60,28 55,31 57,26 53,23 58,23" fill="#fbbf24"/>
+              </g>
+
+              <!-- DERIVED 2: Technician (Center) -->
+              <g transform="translate(120, 160)">
+                <rect x="0" y="0" width="80" height="80" rx="12" fill="rgba(129, 140, 248, 0.08)" stroke="#818cf8" stroke-width="1.8"/>
+                <circle cx="40" cy="30" r="10" fill="#818cf8"/>
+                <path d="M 26 56 C 26 46 32 44 40 44 C 48 44 54 46 54 56" stroke="#818cf8" stroke-width="2" stroke-linecap="round"/>
+                <path d="M 54 18 L 62 26 M 62 18 L 54 26" stroke="#fbbf24" stroke-width="2" stroke-linecap="round"/>
+              </g>
+
+              <!-- DERIVED 3: Requester (Right) -->
+              <g transform="translate(225, 160)">
+                <rect x="0" y="0" width="80" height="80" rx="12" fill="rgba(52, 211, 153, 0.08)" stroke="#34d399" stroke-width="1.8"/>
+                <circle cx="40" cy="30" r="10" fill="#34d399"/>
+                <path d="M 26 56 C 26 46 32 44 40 44 C 48 44 54 46 54 56" stroke="#34d399" stroke-width="2" stroke-linecap="round"/>
+                <circle cx="60" cy="24" r="5" fill="#34d399"/>
+              </g>
+
+              <!-- ENTITY MODEL: Request Ticket (Bottom Center) -->
+              <g transform="translate(50, 275)">
+                <g class="anim-float-reverse">
+                  <rect x="0" y="0" width="220" height="125" rx="14" fill="rgba(255, 255, 255, 0.03)" stroke="rgba(255, 255, 255, 0.2)" stroke-width="1.8"/>
+                  <rect x="85" y="-6" width="50" height="12" rx="4" fill="#38bdf8"/>
+                  <rect x="24" y="24" width="60" height="8" rx="4" fill="#38bdf8" fill-opacity="0.6"/>
+                  <rect x="24" y="44" width="110" height="6" rx="3" fill="#64748b"/>
+                  <rect x="24" y="60" width="90" height="6" rx="3" fill="#64748b"/>
+                  <rect x="24" y="76" width="125" height="6" rx="3" fill="#64748b"/>
+                  <rect x="24" y="92" width="70" height="6" rx="3" fill="#64748b"/>
+                  <circle cx="175" cy="58" r="22" fill="rgba(56, 189, 248, 0.12)" stroke="#38bdf8" stroke-width="2"/>
+                  <path d="M 166 58 L 172 64 L 184 50" stroke="#38bdf8" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+                </g>
+              </g>
+            </svg>
+          </div>
+        </div>
+
+        <!-- Column 2: data structure -->
+        <div class="folder-col">
+          <div class="folder-heading">data structure</div>
+          <div class="folder-graphic">
+            <svg viewBox="0 0 320 440" width="100%" height="420" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <!-- TOP HALF: FIFO Queue Pipeline -->
+              <g transform="translate(10, 40)">
+                <line x1="20" y1="20" x2="280" y2="20" stroke="rgba(255, 255, 255, 0.1)" stroke-width="1.5" stroke-dasharray="4 4"/>
+                <line x1="20" y1="100" x2="280" y2="100" stroke="rgba(255, 255, 255, 0.1)" stroke-width="1.5" stroke-dasharray="4 4"/>
+
+                <!-- Inflow Arrow (Enqueue) -->
+                <path d="M 10 60 L 32 60 M 26 52 L 34 60 L 26 68" stroke="#818cf8" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+
+                <!-- Queue Node 3 (Rear) -->
+                <g transform="translate(45, 30)">
+                  <rect x="0" y="0" width="60" height="60" rx="10" fill="rgba(255, 255, 255, 0.04)" stroke="rgba(255, 255, 255, 0.2)" stroke-width="1.8"/>
+                  <circle cx="30" cy="30" r="7" fill="#64748b"/>
+                </g>
+
+                <!-- Queue Node 2 (Middle) -->
+                <g transform="translate(120, 30)">
+                  <rect x="0" y="0" width="60" height="60" rx="10" fill="rgba(129, 140, 248, 0.08)" stroke="rgba(129, 140, 248, 0.4)" stroke-width="1.8"/>
+                  <circle cx="30" cy="30" r="7" fill="#818cf8"/>
+                </g>
+
+                <!-- Queue Node 1 (Front / Head - Popping) -->
+                <g transform="translate(195, 26)">
+                  <g class="anim-scale">
+                    <rect x="0" y="0" width="68" height="68" rx="12" fill="rgba(56, 189, 248, 0.2)" stroke="#38bdf8" stroke-width="2.5"/>
+                    <rect x="22" y="22" width="24" height="24" rx="5" fill="#38bdf8"/>
+                  </g>
+                </g>
+
+                <!-- Outflow Arrow (Dequeue) -->
+                <path d="M 275 60 L 298 60 M 290 52 L 298 60 L 290 68" stroke="#38bdf8" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="dash-flow-fast"/>
+              </g>
+
+              <!-- Divider -->
+              <line x1="40" y1="210" x2="280" y2="210" stroke="rgba(255, 255, 255, 0.1)" stroke-width="1"/>
+
+              <!-- BOTTOM HALF: Pointer Linked List -->
+              <g transform="translate(15, 255)">
+                <!-- Node 1 -->
+                <g transform="translate(0, 0)">
+                  <rect x="0" y="0" width="68" height="54" rx="10" fill="rgba(255, 255, 255, 0.04)" stroke="rgba(255, 255, 255, 0.22)" stroke-width="1.8"/>
+                  <line x1="42" y1="0" x2="42" y2="54" stroke="rgba(255, 255, 255, 0.15)" stroke-width="1.5"/>
+                  <circle cx="21" cy="27" r="7" fill="#38bdf8"/>
+                  <circle cx="55" cy="27" r="4" fill="#818cf8"/>
+                </g>
+
+                <!-- Arrow 1 to 2 -->
+                <path d="M 68 27 L 105 27 M 98 21 L 105 27 L 98 33" stroke="#818cf8" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="dash-flow-fast"/>
+
+                <!-- Node 2 -->
+                <g transform="translate(105, 0)">
+                  <rect x="0" y="0" width="68" height="54" rx="10" fill="rgba(255, 255, 255, 0.04)" stroke="rgba(255, 255, 255, 0.22)" stroke-width="1.8"/>
+                  <line x1="42" y1="0" x2="42" y2="54" stroke="rgba(255, 255, 255, 0.15)" stroke-width="1.5"/>
+                  <circle cx="21" cy="27" r="7" fill="#818cf8"/>
+                  <circle cx="55" cy="27" r="4" fill="#818cf8"/>
+                </g>
+
+                <!-- Arrow 2 to 3 -->
+                <path d="M 173 27 L 210 27 M 203 21 L 210 27 L 203 33" stroke="#818cf8" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="dash-flow-fast"/>
+
+                <!-- Node 3 -->
+                <g transform="translate(210, 0)">
+                  <rect x="0" y="0" width="68" height="54" rx="10" fill="rgba(255, 255, 255, 0.04)" stroke="rgba(255, 255, 255, 0.22)" stroke-width="1.8"/>
+                  <line x1="42" y1="0" x2="42" y2="54" stroke="rgba(255, 255, 255, 0.15)" stroke-width="1.5"/>
+                  <circle cx="21" cy="27" r="7" fill="#34d399"/>
+                  <circle cx="55" cy="27" r="4" fill="#818cf8"/>
+                </g>
+
+                <!-- Nullptr Ground -->
+                <path d="M 278 27 L 296 27" stroke="#64748b" stroke-width="2.5" stroke-linecap="round"/>
+                <line x1="296" y1="18" x2="296" y2="36" stroke="#64748b" stroke-width="2.5" stroke-linecap="round"/>
+                <line x1="300" y1="21" x2="300" y2="33" stroke="#64748b" stroke-width="2" stroke-linecap="round"/>
+                <line x1="304" y1="24" x2="304" y2="30" stroke="#64748b" stroke-width="1.5" stroke-linecap="round"/>
+              </g>
+            </svg>
+          </div>
+        </div>
+
+        <!-- Column 3: data -->
+        <div class="folder-col">
+          <div class="folder-heading">data</div>
+          <div class="folder-graphic">
+            <svg viewBox="0 0 320 440" width="100%" height="420" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <!-- TOP: Structured Text File (.txt) with Pipe Delimiters '|' -->
+              <g transform="translate(70, 20)">
+                <g class="anim-float">
+                  <path d="M 0 0 L 140 0 L 180 40 L 180 120 C 180 126 174 130 168 130 L 12 130 C 6 130 0 126 0 120 Z" 
+                        fill="rgba(255, 255, 255, 0.03)" stroke="rgba(255, 255, 255, 0.25)" stroke-width="2"/>
+                  <path d="M 140 0 L 140 40 L 180 40" stroke="rgba(255, 255, 255, 0.25)" stroke-width="2" fill="rgba(255, 255, 255, 0.08)"/>
+
+                  <!-- Delimited Record Row 1 -->
+                  <rect x="20" y="32" width="28" height="6" rx="3" fill="#64748b"/>
+                  <line x1="56" y1="26" x2="56" y2="44" stroke="#38bdf8" stroke-width="3" stroke-linecap="round" class="anim-pipe-pulse"/>
+                  <rect x="66" y="32" width="42" height="6" rx="3" fill="#64748b"/>
+                  <line x1="116" y1="26" x2="116" y2="44" stroke="#38bdf8" stroke-width="3" stroke-linecap="round" class="anim-pipe-pulse"/>
+                  <rect x="126" y="32" width="32" height="6" rx="3" fill="#64748b"/>
+
+                  <!-- Delimited Record Row 2 -->
+                  <rect x="20" y="58" width="38" height="6" rx="3" fill="#64748b"/>
+                  <line x1="66" y1="52" x2="66" y2="70" stroke="#38bdf8" stroke-width="3" stroke-linecap="round" class="anim-pipe-pulse"/>
+                  <rect x="76" y="58" width="32" height="6" rx="3" fill="#64748b"/>
+                  <line x1="116" y1="52" x2="116" y2="70" stroke="#38bdf8" stroke-width="3" stroke-linecap="round" class="anim-pipe-pulse"/>
+                  <rect x="126" y="58" width="28" height="6" rx="3" fill="#64748b"/>
+
+                  <!-- Delimited Record Row 3 -->
+                  <rect x="20" y="84" width="24" height="6" rx="3" fill="#64748b"/>
+                  <line x1="52" y1="78" x2="52" y2="96" stroke="#38bdf8" stroke-width="3" stroke-linecap="round" class="anim-pipe-pulse"/>
+                  <rect x="62" y="84" width="46" height="6" rx="3" fill="#64748b"/>
+                  <line x1="116" y1="78" x2="116" y2="96" stroke="#38bdf8" stroke-width="3" stroke-linecap="round" class="anim-pipe-pulse"/>
+                  <rect x="126" y="84" width="34" height="6" rx="3" fill="#64748b"/>
+                </g>
+              </g>
+
+              <!-- CENTER: DataManager Bidirectional Sync Arrows -->
+              <g transform="translate(160, 215)">
+                <path d="M -40 25 C -70 0 -70 -25 -40 -45" stroke="#34d399" stroke-width="3" fill="none" stroke-linecap="round" stroke-dasharray="6 6" class="dash-flow-reverse"/>
+                <polygon points="-40,-48 -30,-42 -42,-38" fill="#34d399"/>
+
+                <path d="M 40 -45 C 70 -25 70 0 40 25" stroke="#38bdf8" stroke-width="3" fill="none" stroke-linecap="round" stroke-dasharray="6 6" class="dash-flow-fast"/>
+                <polygon points="40,28 30,22 42,18" fill="#38bdf8"/>
+
+                <!-- Rotating Sync Hub -->
+                <circle cx="0" cy="-10" r="18" fill="rgba(56, 189, 248, 0.12)" stroke="#38bdf8" stroke-width="2"/>
+                <g>
+                  <path d="M -7 -10 L 7 -10 M 0 -17 L 0 -3" stroke="#38bdf8" stroke-width="2.5" stroke-linecap="round"/>
+                  <animateTransform attributeName="transform" type="rotate" from="0 0 -10" to="360 0 -10" dur="6s" repeatCount="indefinite"/>
+                </g>
+              </g>
+
+              <!-- BOTTOM: Persistent Storage Database Cylinder Stack -->
+              <g transform="translate(80, 290)">
+                <ellipse cx="80" cy="75" rx="70" ry="16" fill="rgba(56, 189, 248, 0.15)" stroke="#38bdf8" stroke-width="2"/>
+                <path d="M 10 50 C 10 65 42 75 80 75 C 118 75 150 65 150 50 L 150 75 C 150 90 118 100 80 100 C 42 100 10 90 10 75 Z" 
+                      fill="rgba(56, 189, 248, 0.08)" stroke="#38bdf8" stroke-width="2"/>
+
+                <path d="M 10 25 C 10 40 42 50 80 50 C 118 50 150 40 150 25 L 150 50 C 150 65 118 75 80 75 C 42 75 10 65 10 50 Z" 
+                      fill="rgba(56, 189, 248, 0.08)" stroke="#38bdf8" stroke-width="2"/>
+
+                <ellipse cx="80" cy="25" rx="70" ry="16" fill="rgba(56, 189, 248, 0.25)" stroke="#38bdf8" stroke-width="2"/>
+
+                <circle cx="40" cy="62" r="3.5" fill="#34d399"/>
+                <circle cx="54" cy="62" r="3.5" fill="#38bdf8"/>
+                <circle cx="40" cy="86" r="3.5" fill="#34d399"/>
+                <circle cx="54" cy="86" r="3.5" fill="#fbbf24"/>
+              </g>
+            </svg>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- SLIDE 3: OOP Classes -->
+    <div class="slide">
+      <div class="slide-header-title">classes</div>
+      <div class="slide-svg-wrap">
+        <svg viewBox="0 0 1000 460" width="100%" height="440" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <!-- ================= LEFT: PERSON OOP HIERARCHY ================= -->
+          <!-- BASE CLASS: Person (Top Center of Left) -->
+          <g transform="translate(200, 25)">
+            <g class="anim-float">
+              <rect x="0" y="0" width="220" height="76" rx="14" fill="rgba(56, 189, 248, 0.1)" stroke="#38bdf8" stroke-width="2"/>
+              <!-- User Silhouette & Gold Crown -->
+              <circle cx="38" cy="36" r="14" fill="#38bdf8"/>
+              <path d="M 22 58 C 22 47 29 45 38 45 C 47 45 54 47 54 58" stroke="#38bdf8" stroke-width="2.5" stroke-linecap="round"/>
+              <polygon points="38,14 41,20 47,20 42,24 44,30 38,26 32,30 34,24 29,20 35,20" fill="#fbbf24"/>
+              
+              <!-- Labels -->
+              <text x="70" y="32" fill="#ffffff" font-size="16" font-weight="800" font-family="system-ui">person</text>
+              <text x="70" y="48" fill="#38bdf8" font-size="11" font-weight="700" font-family="system-ui">BASE CLASS</text>
+              <text x="70" y="64" fill="#94a3b8" font-size="10" font-family="monospace">id • name • auth</text>
+            </g>
+          </g>
+
+          <!-- INHERITANCE BRANCHES -->
+          <!-- Left Branch to Facility Manager -->
+          <path d="M 270 101 C 270 145 110 135 110 170" stroke="#334155" stroke-width="2" fill="none" stroke-dasharray="4 4"/>
+          <path d="M 270 101 C 270 145 110 135 110 170" stroke="#38bdf8" stroke-width="2" fill="none" stroke-dasharray="8 12" class="dash-flow-fast"/>
+
+          <!-- Center Branch to Technician -->
+          <path d="M 310 101 L 310 170" stroke="#334155" stroke-width="2" fill="none" stroke-dasharray="4 4"/>
+          <path d="M 310 101 L 310 170" stroke="#818cf8" stroke-width="2" fill="none" stroke-dasharray="8 12" class="dash-flow-fast"/>
+
+          <!-- Right Branch to Requester -->
+          <path d="M 350 101 C 350 145 510 135 510 170" stroke="#334155" stroke-width="2" fill="none" stroke-dasharray="4 4"/>
+          <path d="M 350 101 C 350 145 510 135 510 170" stroke="#34d399" stroke-width="2" fill="none" stroke-dasharray="8 12" class="dash-flow-fast"/>
+
+          <!-- DERIVED 1: Facility Manager -->
+          <g transform="translate(30, 170)">
+            <rect x="0" y="0" width="160" height="115" rx="12" fill="rgba(56, 189, 248, 0.06)" stroke="#38bdf8" stroke-width="1.8"/>
+            <circle cx="36" cy="36" r="14" fill="#38bdf8"/>
+            <path d="M 22 58 C 22 48 28 46 36 46 C 44 46 50 48 50 58" stroke="#38bdf8" stroke-width="2" stroke-linecap="round"/>
+            <polygon points="56,20 58,25 63,25 59,28 61,33 56,30 51,33 53,28 49,25 54,25" fill="#fbbf24"/>
+            <text x="74" y="36" fill="#ffffff" font-size="13" font-weight="700" font-family="system-ui">facility</text>
+            <text x="74" y="52" fill="#ffffff" font-size="13" font-weight="700" font-family="system-ui">manager</text>
+            <line x1="16" y1="72" x2="144" y2="72" stroke="rgba(255, 255, 255, 0.08)" stroke-width="1"/>
+            <text x="18" y="90" fill="#38bdf8" font-size="10" font-weight="600" font-family="system-ui">• assigns queue</text>
+            <text x="18" y="104" fill="#94a3b8" font-size="10" font-family="system-ui">• manages users</text>
+          </g>
+
+          <!-- DERIVED 2: Technician -->
+          <g transform="translate(230, 170)">
+            <rect x="0" y="0" width="160" height="115" rx="12" fill="rgba(129, 140, 248, 0.06)" stroke="#818cf8" stroke-width="1.8"/>
+            <circle cx="36" cy="36" r="14" fill="#818cf8"/>
+            <path d="M 22 58 C 22 48 28 46 36 46 C 44 46 50 48 50 58" stroke="#818cf8" stroke-width="2" stroke-linecap="round"/>
+            <path d="M 52 24 L 62 34 M 62 24 L 52 34" stroke="#fbbf24" stroke-width="2.5" stroke-linecap="round"/>
+            <text x="74" y="44" fill="#ffffff" font-size="14" font-weight="700" font-family="system-ui">technician</text>
+            <line x1="16" y1="72" x2="144" y2="72" stroke="rgba(255, 255, 255, 0.08)" stroke-width="1"/>
+            <text x="18" y="90" fill="#818cf8" font-size="10" font-weight="600" font-family="system-ui">• processes jobs</text>
+            <text x="18" y="104" fill="#94a3b8" font-size="10" font-family="system-ui">• repair notes</text>
+          </g>
+
+          <!-- DERIVED 3: Requester -->
+          <g transform="translate(430, 170)">
+            <rect x="0" y="0" width="160" height="115" rx="12" fill="rgba(52, 211, 153, 0.06)" stroke="#34d399" stroke-width="1.8"/>
+            <circle cx="36" cy="36" r="14" fill="#34d399"/>
+            <path d="M 22 58 C 22 48 28 46 36 46 C 44 46 50 48 50 58" stroke="#34d399" stroke-width="2" stroke-linecap="round"/>
+            <circle cx="58" cy="26" r="6" fill="#34d399"/>
+            <text x="74" y="44" fill="#ffffff" font-size="14" font-weight="700" font-family="system-ui">requester</text>
+            <line x1="16" y1="72" x2="144" y2="72" stroke="rgba(255, 255, 255, 0.08)" stroke-width="1"/>
+            <text x="18" y="90" fill="#34d399" font-size="10" font-weight="600" font-family="system-ui">• submits tickets</text>
+            <text x="18" y="104" fill="#94a3b8" font-size="10" font-family="system-ui">• tracks status</text>
+          </g>
+
+          <!-- ROLE INTERACTION FLOW (Bottom of Left Zone) -->
+          <g transform="translate(40, 320)">
+            <rect x="0" y="0" width="540" height="46" rx="10" fill="rgba(255, 255, 255, 0.02)" stroke="rgba(255, 255, 255, 0.1)" stroke-width="1.2"/>
+            <text x="24" y="28" fill="#34d399" font-size="11" font-weight="700" font-family="system-ui">Requester Submits</text>
+            <path d="M 148 24 L 178 24 M 172 19 L 178 24 L 172 29" stroke="#64748b" stroke-width="2" stroke-linecap="round"/>
+            <text x="195" y="28" fill="#38bdf8" font-size="11" font-weight="700" font-family="system-ui">Manager Assigns</text>
+            <path d="M 312 24 L 342 24 M 336 19 L 342 24 L 336 29" stroke="#64748b" stroke-width="2" stroke-linecap="round"/>
+            <text x="360" y="28" fill="#818cf8" font-size="11" font-weight="700" font-family="system-ui">Technician Resolves</text>
+          </g>
+
+          <!-- ================= RIGHT: REQUEST MODEL & BEST PRACTICES ================= -->
+          <!-- REQUEST ENTITY CARD -->
+          <g transform="translate(645, 25)">
+            <g class="anim-float-reverse">
+              <rect x="0" y="0" width="325" height="225" rx="14" fill="rgba(255, 255, 255, 0.03)" stroke="rgba(255, 255, 255, 0.2)" stroke-width="1.8"/>
+              <!-- Top Clip -->
+              <rect x="132" y="-7" width="60" height="14" rx="4" fill="#38bdf8"/>
+              
+              <text x="24" y="38" fill="#ffffff" font-size="18" font-weight="800" font-family="system-ui">request</text>
+              <text x="24" y="56" fill="#38bdf8" font-size="11" font-weight="700" font-family="system-ui">TICKET ENTITY MODEL</text>
+
+              <!-- Verified Stamp -->
+              <circle cx="280" cy="38" r="16" fill="rgba(56, 189, 248, 0.12)" stroke="#38bdf8" stroke-width="1.8"/>
+              <path d="M 273 38 L 278 43 L 287 33" stroke="#38bdf8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+
+              <!-- Attribute Chips Grid with Perfectly Centered Text -->
+              <!-- Row 1 -->
+              <g transform="translate(20, 75)">
+                <rect width="84" height="26" rx="6" fill="rgba(56, 189, 248, 0.12)" stroke="#38bdf8" stroke-width="1"/>
+                <text x="42" y="17" text-anchor="middle" fill="#38bdf8" font-size="11" font-family="monospace">ticketId</text>
+              </g>
+              <g transform="translate(112, 75)">
+                <rect width="94" height="26" rx="6" fill="rgba(52, 211, 153, 0.12)" stroke="#34d399" stroke-width="1"/>
+                <text x="47" y="17" text-anchor="middle" fill="#34d399" font-size="11" font-family="monospace">requesterId</text>
+              </g>
+              <g transform="translate(214, 75)">
+                <rect width="90" height="26" rx="6" fill="rgba(129, 140, 248, 0.12)" stroke="#818cf8" stroke-width="1"/>
+                <text x="45" y="17" text-anchor="middle" fill="#818cf8" font-size="11" font-family="monospace">techId</text>
+              </g>
+
+              <!-- Row 2 -->
+              <g transform="translate(20, 114)">
+                <rect width="90" height="26" rx="6" fill="rgba(251, 191, 36, 0.12)" stroke="#fbbf24" stroke-width="1"/>
+                <text x="45" y="17" text-anchor="middle" fill="#fbbf24" font-size="11" font-family="monospace">location</text>
+              </g>
+              <g transform="translate(118, 114)">
+                <rect width="94" height="26" rx="6" fill="rgba(251, 191, 36, 0.12)" stroke="#fbbf24" stroke-width="1"/>
+                <text x="47" y="17" text-anchor="middle" fill="#fbbf24" font-size="11" font-family="monospace">category</text>
+              </g>
+              <g transform="translate(220, 114)">
+                <rect width="84" height="26" rx="6" fill="rgba(52, 211, 153, 0.12)" stroke="#34d399" stroke-width="1"/>
+                <text x="42" y="17" text-anchor="middle" fill="#34d399" font-size="11" font-family="monospace">status</text>
+              </g>
+
+              <!-- Row 3 -->
+              <g transform="translate(20, 153)">
+                <rect width="138" height="26" rx="6" fill="rgba(255, 255, 255, 0.06)" stroke="rgba(255, 255, 255, 0.2)" stroke-width="1"/>
+                <text x="69" y="17" text-anchor="middle" fill="#cbd5e1" font-size="11" font-family="monospace">targetDate</text>
+              </g>
+              <g transform="translate(166, 153)">
+                <rect width="138" height="26" rx="6" fill="rgba(255, 255, 255, 0.06)" stroke="rgba(255, 255, 255, 0.2)" stroke-width="1"/>
+                <text x="69" y="17" text-anchor="middle" fill="#cbd5e1" font-size="11" font-family="monospace">repairNotes</text>
+              </g>
+            </g>
+          </g>
+
+          <!-- BEST PRACTICES BADGES -->
+          <g transform="translate(645, 280)">
+            <!-- Destructor -->
+            <g transform="translate(0, 0)">
+              <rect x="0" y="0" width="100" height="86" rx="12" fill="rgba(56, 189, 248, 0.08)" stroke="#38bdf8" stroke-width="1.6"/>
+              <text x="50" y="38" text-anchor="middle" fill="#38bdf8" font-size="28" font-weight="800" font-family="monospace">~</text>
+              <text x="50" y="58" text-anchor="middle" fill="#ffffff" font-size="11" font-weight="700" font-family="system-ui">destructor</text>
+              <text x="50" y="72" text-anchor="middle" fill="#38bdf8" font-size="9" font-family="system-ui">memory safety</text>
+            </g>
+
+            <!-- Virtual -->
+            <g transform="translate(112, 0)">
+              <rect x="0" y="0" width="100" height="86" rx="12" fill="rgba(129, 140, 248, 0.08)" stroke="#818cf8" stroke-width="1.6"/>
+              <text x="50" y="36" text-anchor="middle" fill="#818cf8" font-size="22" font-weight="800" font-family="monospace">⟳</text>
+              <text x="50" y="58" text-anchor="middle" fill="#ffffff" font-size="11" font-weight="700" font-family="system-ui">virtual</text>
+              <text x="50" y="72" text-anchor="middle" fill="#818cf8" font-size="9" font-family="system-ui">polymorphism</text>
+            </g>
+
+            <!-- Const -->
+            <g transform="translate(224, 0)">
+              <rect x="0" y="0" width="100" height="86" rx="12" fill="rgba(52, 211, 153, 0.08)" stroke="#34d399" stroke-width="1.6"/>
+              <text x="50" y="36" text-anchor="middle" fill="#34d399" font-size="22" font-weight="800" font-family="monospace">🔒</text>
+              <text x="50" y="58" text-anchor="middle" fill="#ffffff" font-size="11" font-weight="700" font-family="system-ui">const</text>
+              <text x="50" y="72" text-anchor="middle" fill="#34d399" font-size="9" font-family="system-ui">state safety</text>
+            </g>
+          </g>
+        </svg>
+      </div>
+    </div>
+
+    <!-- SLIDE 4: FIFO Queue -->
+    <div class="slide">
+      <div class="slide-header-title">queue</div>
+      <div class="slide-svg-wrap">
+        <svg viewBox="0 0 960 440" width="100%" height="420" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <!-- TOP: FIFO Queue Conveyor Pipeline -->
+          <g transform="translate(50, 40)">
+            <text x="10" y="0" fill="#94a3b8" font-size="13" font-weight="700" letter-spacing="0.1em" font-family="system-ui">FIFO PIPELINE</text>
+            
+            <line x1="80" y1="50" x2="780" y2="50" stroke="rgba(255, 255, 255, 0.12)" stroke-width="2" stroke-dasharray="6 6"/>
+            <line x1="80" y1="130" x2="780" y2="130" stroke="rgba(255, 255, 255, 0.12)" stroke-width="2" stroke-dasharray="6 6"/>
+
+            <!-- Enqueue (Tail) Arrow -->
+            <g transform="translate(20, 80)" class="anim-pulse-subtle">
+              <path d="M 0 10 L 40 10 M 30 0 L 40 10 L 30 20" stroke="#818cf8" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+              <text x="-15" y="-10" fill="#818cf8" font-size="11" font-weight="700" font-family="system-ui">ENQUEUE</text>
+            </g>
+
+            <!-- Node 3 (Rear) -->
+            <g transform="translate(130, 60)">
+              <rect x="0" y="0" width="110" height="60" rx="10" fill="rgba(255, 255, 255, 0.04)" stroke="rgba(255, 255, 255, 0.2)" stroke-width="1.8"/>
+              <text x="20" y="35" fill="#94a3b8" font-size="14" font-weight="700" font-family="system-ui">request 3</text>
+            </g>
+
+            <!-- Node 2 (Middle) -->
+            <g transform="translate(300, 60)">
+              <rect x="0" y="0" width="110" height="60" rx="10" fill="rgba(129, 140, 248, 0.08)" stroke="rgba(129, 140, 248, 0.4)" stroke-width="1.8"/>
+              <text x="20" y="35" fill="#818cf8" font-size="14" font-weight="700" font-family="system-ui">request 2</text>
+            </g>
+
+            <!-- Node 1 (Front / Head - Popping) -->
+            <g transform="translate(470, 56)">
+              <g class="anim-scale">
+                <rect x="0" y="0" width="120" height="68" rx="12" fill="rgba(56, 189, 248, 0.18)" stroke="#38bdf8" stroke-width="2.5"/>
+                <text x="18" y="38" fill="#ffffff" font-size="15" font-weight="800" font-family="system-ui">request 1</text>
+                <text x="18" y="54" fill="#38bdf8" font-size="10" font-weight="700" font-family="system-ui">HEAD (POP)</text>
+              </g>
+            </g>
+
+            <!-- Dequeue (Head) Arrow to Technician Assignment -->
+            <g transform="translate(630, 80)">
+              <path d="M 0 10 L 60 10 M 50 0 L 60 10 L 50 20" stroke="#38bdf8" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="dash-flow-fast"/>
+              <text x="15" y="-10" fill="#38bdf8" font-size="11" font-weight="700" font-family="system-ui">DEQUEUE</text>
+
+              <g transform="translate(80, -25)">
+                <g class="anim-float">
+                  <rect x="0" y="0" width="150" height="70" rx="12" fill="rgba(52, 211, 153, 0.08)" stroke="#34d399" stroke-width="1.8"/>
+                  <text x="20" y="32" fill="#ffffff" font-size="13" font-weight="700" font-family="system-ui">technician</text>
+                  <text x="20" y="50" fill="#34d399" font-size="11" font-weight="600" font-family="system-ui">job assigned</text>
+                </g>
+              </g>
+            </g>
+          </g>
+
+          <!-- BOTTOM: QueueNode Anatomical Diagram -->
+          <g transform="translate(50, 230)">
+            <text x="10" y="0" fill="#94a3b8" font-size="13" font-weight="700" letter-spacing="0.1em" font-family="system-ui">QUEUE NODE ANATOMY</text>
+
+            <g transform="translate(60, 20)">
+              <rect x="0" y="0" width="340" height="140" rx="14" fill="rgba(255, 255, 255, 0.03)" stroke="rgba(255, 255, 255, 0.2)" stroke-width="1.8"/>
+              <text x="24" y="36" fill="#ffffff" font-size="16" font-weight="800" font-family="system-ui">queue node</text>
+
+              <g transform="translate(24, 54)">
+                <rect x="0" y="0" width="135" height="60" rx="8" fill="rgba(56, 189, 248, 0.08)" stroke="#38bdf8" stroke-width="1.5"/>
+                <text x="16" y="28" fill="#38bdf8" font-size="12" font-weight="700" font-family="monospace">request*</text>
+                <text x="16" y="46" fill="#94a3b8" font-size="10" font-family="system-ui">pointer to request</text>
+              </g>
+
+              <g transform="translate(180, 54)">
+                <rect x="0" y="0" width="135" height="60" rx="8" fill="rgba(129, 140, 248, 0.08)" stroke="#818cf8" stroke-width="1.5"/>
+                <text x="16" y="28" fill="#818cf8" font-size="12" font-weight="700" font-family="monospace">next*</text>
+                <text x="16" y="46" fill="#94a3b8" font-size="10" font-family="system-ui">pointer to next node</text>
+              </g>
+            </g>
+
+            <g transform="translate(430, 40)">
+              <path d="M 0 65 L 60 65 M 50 55 L 60 65 L 50 75" stroke="#38bdf8" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="dash-flow-fast"/>
+
+              <g transform="translate(80, 10)" class="anim-pulse-subtle">
+                <rect x="0" y="0" width="160" height="110" rx="12" fill="rgba(56, 189, 248, 0.06)" stroke="#38bdf8" stroke-width="1.8"/>
+                <text x="20" y="36" fill="#ffffff" font-size="14" font-weight="700" font-family="system-ui">request object</text>
+                <circle cx="30" cy="65" r="5" fill="#38bdf8"/>
+                <rect x="44" y="62" width="70" height="6" rx="3" fill="#64748b"/>
+                <circle cx="30" cy="85" r="5" fill="#38bdf8"/>
+                <rect x="44" y="82" width="50" height="6" rx="3" fill="#64748b"/>
+              </g>
+            </g>
+
+            <g transform="translate(710, 40)">
+              <path d="M 0 65 L 45 65 M 35 55 L 45 65 L 35 75" stroke="#818cf8" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="dash-flow-fast"/>
+              <g transform="translate(60, 25)">
+                <rect x="0" y="0" width="110" height="80" rx="10" fill="rgba(255, 255, 255, 0.02)" stroke="rgba(255, 255, 255, 0.15)" stroke-width="1.5" stroke-dasharray="4 4"/>
+                <text x="14" y="46" fill="#64748b" font-size="12" font-family="system-ui">next node</text>
+              </g>
+            </g>
+          </g>
+        </svg>
+      </div>
+    </div>
+
+    <!-- SLIDE 5: Custom Linked Lists -->
+    <div class="slide">
+      <div class="slide-header-title">linked list</div>
+      <div class="slide-svg-wrap">
+        <svg viewBox="0 0 960 440" width="100%" height="420" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <!-- TOP: Forbidden STL & Base Hierarchy -->
+          <g transform="translate(50, 20)">
+            <!-- Forbidden STL Vector Badge -->
+            <g transform="translate(20, 20)" class="anim-pulse-subtle">
+              <rect x="0" y="0" width="170" height="85" rx="12" fill="rgba(239, 68, 68, 0.06)" stroke="#ef4444" stroke-width="1.8"/>
+              <text x="24" y="36" fill="#ef4444" font-size="14" font-weight="800" font-family="monospace">std::vector</text>
+              <line x1="20" y1="70" x2="150" y2="15" stroke="#ef4444" stroke-width="2.5"/>
+              <text x="24" y="62" fill="#94a3b8" font-size="11" font-weight="700" font-family="system-ui">NO STL CONTAINERS</text>
+            </g>
+
+            <!-- Arrow to Custom LinkedList Base -->
+            <path d="M 210 62 L 270 62 M 260 52 L 270 62 L 260 72" stroke="#38bdf8" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+
+            <!-- Abstract Base Class: LinkedList -->
+            <g transform="translate(290, 15)">
+              <g class="anim-float">
+                <rect x="0" y="0" width="220" height="95" rx="14" fill="rgba(56, 189, 248, 0.08)" stroke="#38bdf8" stroke-width="2"/>
+                <text x="24" y="38" fill="#ffffff" font-size="16" font-weight="800" font-family="system-ui">linked list</text>
+                <text x="24" y="56" fill="#38bdf8" font-size="11" font-weight="600" font-family="system-ui">abstract base class</text>
+                <text x="24" y="78" fill="#94a3b8" font-size="11" font-family="monospace">size() • empty() • clear()</text>
+              </g>
+            </g>
+
+            <!-- Branching Beams to 5 Subclasses -->
+            <path d="M 530 62 L 590 62" stroke="#818cf8" stroke-width="2" stroke-linecap="round"/>
+
+            <!-- 5 Subclasses Grid -->
+            <g transform="translate(610, 5)">
+              <g transform="translate(0, 0)">
+                <rect x="0" y="0" width="135" height="32" rx="6" fill="rgba(56, 189, 248, 0.1)" stroke="#38bdf8" stroke-width="1.2"/>
+                <text x="12" y="21" fill="#ffffff" font-size="11" font-weight="600" font-family="system-ui">request list</text>
+              </g>
+              <g transform="translate(145, 0)">
+                <rect x="0" y="0" width="135" height="32" rx="6" fill="rgba(129, 140, 248, 0.1)" stroke="#818cf8" stroke-width="1.2"/>
+                <text x="12" y="21" fill="#ffffff" font-size="11" font-weight="600" font-family="system-ui">technician list</text>
+              </g>
+              <g transform="translate(0, 40)">
+                <rect x="0" y="0" width="135" height="32" rx="6" fill="rgba(52, 211, 153, 0.1)" stroke="#34d399" stroke-width="1.2"/>
+                <text x="12" y="21" fill="#ffffff" font-size="11" font-weight="600" font-family="system-ui">requester list</text>
+              </g>
+              <g transform="translate(145, 40)">
+                <rect x="0" y="0" width="135" height="32" rx="6" fill="rgba(251, 191, 36, 0.1)" stroke="#fbbf24" stroke-width="1.2"/>
+                <text x="12" y="21" fill="#ffffff" font-size="11" font-weight="600" font-family="system-ui">changelog list</text>
+              </g>
+              <g transform="translate(70, 80)">
+                <rect x="0" y="0" width="140" height="32" rx="6" fill="rgba(255, 255, 255, 0.08)" stroke="rgba(255, 255, 255, 0.25)" stroke-width="1.2"/>
+                <text x="14" y="21" fill="#ffffff" font-size="11" font-weight="600" font-family="system-ui">string list</text>
+              </g>
+            </g>
+          </g>
+
+          <!-- BOTTOM: Pointer Traversal Chain -->
+          <g transform="translate(50, 220)">
+            <text x="10" y="0" fill="#94a3b8" font-size="13" font-weight="700" letter-spacing="0.1em" font-family="system-ui">POINTER TRAVERSAL</text>
+
+            <g transform="translate(20, 40)">
+              <!-- Head Pointer -->
+              <g transform="translate(0, 15)">
+                <text x="0" y="32" fill="#38bdf8" font-size="13" font-weight="800" font-family="monospace">HEAD</text>
+                <path d="M 45 28 L 85 28 M 75 18 L 85 28 L 75 38" stroke="#38bdf8" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="dash-flow-fast"/>
+              </g>
+
+              <!-- Node 1 -->
+              <g transform="translate(100, 0)">
+                <rect x="0" y="0" width="120" height="60" rx="10" fill="rgba(255, 255, 255, 0.04)" stroke="rgba(255, 255, 255, 0.2)" stroke-width="1.8"/>
+                <line x1="72" y1="0" x2="72" y2="60" stroke="rgba(255, 255, 255, 0.15)" stroke-width="1.5"/>
+                <text x="16" y="35" fill="#ffffff" font-size="12" font-family="system-ui">data</text>
+                <circle cx="96" cy="30" r="5" fill="#38bdf8"/>
+              </g>
+
+              <path d="M 225 30 L 275 30 M 265 20 L 275 30 L 265 40" stroke="#818cf8" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="dash-flow-fast"/>
+
+              <!-- Node 2 -->
+              <g transform="translate(290, 0)">
+                <rect x="0" y="0" width="120" height="60" rx="10" fill="rgba(255, 255, 255, 0.04)" stroke="rgba(255, 255, 255, 0.2)" stroke-width="1.8"/>
+                <line x1="72" y1="0" x2="72" y2="60" stroke="rgba(255, 255, 255, 0.15)" stroke-width="1.5"/>
+                <text x="16" y="35" fill="#ffffff" font-size="12" font-family="system-ui">data</text>
+                <circle cx="96" cy="30" r="5" fill="#818cf8"/>
+              </g>
+
+              <path d="M 415 30 L 465 30 M 455 20 L 465 30 L 455 40" stroke="#818cf8" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="dash-flow-fast"/>
+
+              <!-- Node 3 -->
+              <g transform="translate(480, 0)">
+                <rect x="0" y="0" width="120" height="60" rx="10" fill="rgba(255, 255, 255, 0.04)" stroke="rgba(255, 255, 255, 0.2)" stroke-width="1.8"/>
+                <line x1="72" y1="0" x2="72" y2="60" stroke="rgba(255, 255, 255, 0.15)" stroke-width="1.5"/>
+                <text x="16" y="35" fill="#ffffff" font-size="12" font-family="system-ui">data</text>
+                <circle cx="96" cy="30" r="5" fill="#34d399"/>
+              </g>
+
+              <path d="M 605 30 L 655 30 M 645 20 L 655 30 L 645 40" stroke="#818cf8" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="dash-flow-fast"/>
+
+              <!-- Terminal Ground (Nullptr) -->
+              <g transform="translate(670, 10)">
+                <line x1="10" y1="20" x2="40" y2="20" stroke="#64748b" stroke-width="2"/>
+                <line x1="40" y1="5" x2="40" y2="35" stroke="#64748b" stroke-width="2"/>
+                <line x1="45" y1="10" x2="45" y2="30" stroke="#64748b" stroke-width="2"/>
+                <line x1="50" y1="15" x2="50" y2="25" stroke="#64748b" stroke-width="2"/>
+                <text x="60" y="24" fill="#64748b" font-size="12" font-family="monospace">nullptr</text>
+              </g>
+            </g>
+          </g>
+        </svg>
+      </div>
+    </div>
+
+    <!-- SLIDE 6: Persistent Storage -->
+    <div class="slide">
+      <div class="slide-header-title">data</div>
+      <div class="slide-svg-wrap">
+        <svg viewBox="0 0 960 440" width="100%" height="420" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <!-- LEFT: Structured Text File (.txt) -->
+          <g transform="translate(60, 50)">
+            <g class="anim-float">
+              <text x="10" y="0" fill="#94a3b8" font-size="13" font-weight="700" letter-spacing="0.1em" font-family="system-ui">DISK TEXT FILES (.TXT)</text>
+              
+              <g transform="translate(10, 25)">
+                <rect x="0" y="0" width="260" height="260" rx="14" fill="rgba(255, 255, 255, 0.025)" stroke="rgba(255, 255, 255, 0.2)" stroke-width="1.8"/>
+                <text x="24" y="36" fill="#ffffff" font-size="14" font-weight="700" font-family="system-ui">requests.txt</text>
+
+                <!-- Row 1 -->
+                <g transform="translate(24, 60)">
+                  <rect x="0" y="4" width="30" height="8" rx="3" fill="#64748b"/>
+                  <line x1="40" y1="0" x2="40" y2="16" stroke="#38bdf8" stroke-width="3" stroke-linecap="round" class="anim-pipe-pulse"/>
+                  <rect x="50" y="4" width="45" height="8" rx="3" fill="#64748b"/>
+                  <line x1="105" y1="0" x2="105" y2="16" stroke="#38bdf8" stroke-width="3" stroke-linecap="round" class="anim-pipe-pulse"/>
+                  <rect x="115" y="4" width="35" height="8" rx="3" fill="#64748b"/>
+                  <line x1="160" y1="0" x2="160" y2="16" stroke="#38bdf8" stroke-width="3" stroke-linecap="round" class="anim-pipe-pulse"/>
+                  <rect x="170" y="4" width="30" height="8" rx="3" fill="#64748b"/>
+                </g>
+
+                <!-- Row 2 -->
+                <g transform="translate(24, 95)">
+                  <rect x="0" y="4" width="24" height="8" rx="3" fill="#64748b"/>
+                  <line x1="34" y1="0" x2="34" y2="16" stroke="#38bdf8" stroke-width="3" stroke-linecap="round" class="anim-pipe-pulse" style="animation-delay: 0.2s;"/>
+                  <rect x="44" y="4" width="55" height="8" rx="3" fill="#64748b"/>
+                  <line x1="110" y1="0" x2="110" y2="16" stroke="#38bdf8" stroke-width="3" stroke-linecap="round" class="anim-pipe-pulse" style="animation-delay: 0.2s;"/>
+                  <rect x="120" y="4" width="30" height="8" rx="3" fill="#64748b"/>
+                  <line x1="160" y1="0" x2="160" y2="16" stroke="#38bdf8" stroke-width="3" stroke-linecap="round" class="anim-pipe-pulse" style="animation-delay: 0.2s;"/>
+                  <rect x="170" y="4" width="38" height="8" rx="3" fill="#64748b"/>
+                </g>
+
+                <!-- Row 3 -->
+                <g transform="translate(24, 130)">
+                  <rect x="0" y="4" width="32" height="8" rx="3" fill="#64748b"/>
+                  <line x1="42" y1="0" x2="42" y2="16" stroke="#38bdf8" stroke-width="3" stroke-linecap="round" class="anim-pipe-pulse" style="animation-delay: 0.4s;"/>
+                  <rect x="52" y="4" width="40" height="8" rx="3" fill="#64748b"/>
+                  <line x1="102" y1="0" x2="102" y2="16" stroke="#38bdf8" stroke-width="3" stroke-linecap="round" class="anim-pipe-pulse" style="animation-delay: 0.4s;"/>
+                  <rect x="112" y="4" width="45" height="8" rx="3" fill="#64748b"/>
+                  <line x1="167" y1="0" x2="167" y2="16" stroke="#38bdf8" stroke-width="3" stroke-linecap="round" class="anim-pipe-pulse" style="animation-delay: 0.4s;"/>
+                  <rect x="177" y="4" width="25" height="8" rx="3" fill="#64748b"/>
+                </g>
+
+                <text x="24" y="220" fill="#38bdf8" font-size="12" font-weight="700" font-family="monospace">DELIMITER: '|'</text>
+              </g>
+            </g>
+          </g>
+
+          <!-- CENTER: DataManager Synchronization Hub -->
+          <g transform="translate(480, 200)">
+            <path d="M -120 -50 C -40 -120 40 -120 120 -50" stroke="#34d399" stroke-width="3" fill="none" stroke-dasharray="8 8" class="dash-flow-fast"/>
+            <polygon points="120,-50 108,-60 115,-40" fill="#34d399"/>
+            <text x="-40" y="-105" fill="#34d399" font-size="13" font-weight="700" font-family="system-ui">LOAD DATA</text>
+
+            <path d="M 120 50 C 40 120 -40 120 -120 50" stroke="#38bdf8" stroke-width="3" fill="none" stroke-dasharray="8 8" class="dash-flow-fast"/>
+            <polygon points="-120,50 -108,60 -115,40" fill="#38bdf8"/>
+            <text x="-40" y="115" fill="#38bdf8" font-size="13" font-weight="700" font-family="system-ui">SAVE DATA</text>
+
+            <g class="anim-pulse-subtle">
+              <rect x="-65" y="-35" width="130" height="70" rx="14" fill="rgba(56, 189, 248, 0.12)" stroke="#38bdf8" stroke-width="2"/>
+              <text x="-50" y="4" fill="#ffffff" font-size="14" font-weight="800" font-family="system-ui">data manager</text>
+              <text x="-32" y="22" fill="#38bdf8" font-size="10" font-weight="600" font-family="system-ui">file I/O engine</text>
+            </g>
+          </g>
+
+          <!-- RIGHT: In-Memory Model -->
+          <g transform="translate(670, 50)">
+            <g class="anim-float-reverse">
+              <text x="10" y="0" fill="#94a3b8" font-size="13" font-weight="700" letter-spacing="0.1em" font-family="system-ui">IN-MEMORY MODEL</text>
+
+              <g transform="translate(10, 25)">
+                <rect x="0" y="0" width="220" height="260" rx="14" fill="rgba(255, 255, 255, 0.025)" stroke="rgba(255, 255, 255, 0.2)" stroke-width="1.8"/>
+
+                <g transform="translate(20, 30)">
+                  <rect x="0" y="0" width="180" height="44" rx="8" fill="rgba(129, 140, 248, 0.08)" stroke="#818cf8" stroke-width="1.5"/>
+                  <text x="16" y="28" fill="#ffffff" font-size="12" font-weight="700" font-family="system-ui">5 linked lists</text>
+                </g>
+
+                <g transform="translate(20, 95)">
+                  <rect x="0" y="0" width="180" height="44" rx="8" fill="rgba(56, 189, 248, 0.08)" stroke="#38bdf8" stroke-width="1.5"/>
+                  <text x="16" y="28" fill="#ffffff" font-size="12" font-weight="700" font-family="system-ui">fifo pending queue</text>
+                </g>
+
+                <g transform="translate(40, 160)" class="anim-pulse-subtle">
+                  <ellipse cx="70" cy="45" rx="50" ry="12" fill="rgba(56, 189, 248, 0.15)" stroke="#38bdf8" stroke-width="1.5"/>
+                  <path d="M 20 25 C 20 35 45 45 70 45 C 95 45 120 35 120 25 L 120 45 C 120 55 95 65 70 65 C 45 65 20 55 20 45 Z" fill="rgba(56, 189, 248, 0.08)" stroke="#38bdf8" stroke-width="1.5"/>
+                  <ellipse cx="70" cy="25" rx="50" ry="12" fill="rgba(56, 189, 248, 0.25)" stroke="#38bdf8" stroke-width="1.5"/>
+                </g>
+              </g>
+            </g>
+          </g>
+        </svg>
+      </div>
+    </div>
+
+    <!-- SLIDE 7: Program Flow -->
+    <div class="slide">
+      <div class="slide-header-title">main.cpp</div>
+      <div class="slide-svg-wrap">
+        <svg viewBox="0 0 960 440" width="100%" height="420" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <!-- 5-Step Control Pipeline Circuit -->
+          <g transform="translate(30, 140)">
+            <path d="M 40 40 L 860 40" stroke="rgba(255, 255, 255, 0.12)" stroke-width="3"/>
+            <path d="M 40 40 L 860 40" stroke="#38bdf8" stroke-width="3" stroke-dasharray="16 24" class="dash-flow-fast"/>
+
+            <!-- STEP 1: Load Data -->
+            <g transform="translate(10, 0)" class="anim-pulse-subtle">
+              <rect x="0" y="0" width="140" height="80" rx="12" fill="rgba(56, 189, 248, 0.08)" stroke="#38bdf8" stroke-width="1.8"/>
+              <text x="16" y="28" fill="#38bdf8" font-size="11" font-weight="800" font-family="monospace">01</text>
+              <text x="16" y="48" fill="#ffffff" font-size="13" font-weight="700" font-family="system-ui">load data</text>
+              <text x="16" y="65" fill="#94a3b8" font-size="10" font-family="system-ui">data manager</text>
+            </g>
+
+            <!-- STEP 2: Select Role -->
+            <g transform="translate(190, 0)" class="anim-pulse-subtle" style="animation-delay: 0.2s;">
+              <rect x="0" y="0" width="140" height="80" rx="12" fill="rgba(129, 140, 248, 0.08)" stroke="#818cf8" stroke-width="1.8"/>
+              <text x="16" y="28" fill="#818cf8" font-size="11" font-weight="800" font-family="monospace">02</text>
+              <text x="16" y="48" fill="#ffffff" font-size="13" font-weight="700" font-family="system-ui">select role</text>
+              <text x="16" y="65" fill="#94a3b8" font-size="10" font-family="system-ui">manager/tech/user</text>
+            </g>
+
+            <!-- STEP 3: Authenticate -->
+            <g transform="translate(370, 0)" class="anim-pulse-subtle" style="animation-delay: 0.4s;">
+              <rect x="0" y="0" width="140" height="80" rx="12" fill="rgba(251, 191, 36, 0.08)" stroke="#fbbf24" stroke-width="1.8"/>
+              <text x="16" y="28" fill="#fbbf24" font-size="11" font-weight="800" font-family="monospace">03</text>
+              <text x="16" y="48" fill="#ffffff" font-size="13" font-weight="700" font-family="system-ui">authenticate</text>
+              <text x="16" y="65" fill="#94a3b8" font-size="10" font-family="system-ui">login / sign up</text>
+            </g>
+
+            <!-- STEP 4: Dispatch Menu -->
+            <g transform="translate(550, 0)" class="anim-pulse-subtle" style="animation-delay: 0.6s;">
+              <rect x="0" y="0" width="140" height="80" rx="12" fill="rgba(52, 211, 153, 0.08)" stroke="#34d399" stroke-width="1.8"/>
+              <text x="16" y="28" fill="#34d399" font-size="11" font-weight="800" font-family="monospace">04</text>
+              <text x="16" y="48" fill="#ffffff" font-size="13" font-weight="700" font-family="system-ui">dispatch menu</text>
+              <text x="16" y="65" fill="#94a3b8" font-size="10" font-family="system-ui">switch case loop</text>
+            </g>
+
+            <!-- STEP 5: Save & Exit -->
+            <g transform="translate(730, 0)" class="anim-pulse-subtle" style="animation-delay: 0.8s;">
+              <rect x="0" y="0" width="140" height="80" rx="12" fill="rgba(56, 189, 248, 0.08)" stroke="#38bdf8" stroke-width="1.8"/>
+              <text x="16" y="28" fill="#38bdf8" font-size="11" font-weight="800" font-family="monospace">05</text>
+              <text x="16" y="48" fill="#ffffff" font-size="13" font-weight="700" font-family="system-ui">save &amp; exit</text>
+              <text x="16" y="65" fill="#94a3b8" font-size="10" font-family="system-ui">option 0 shutdown</text>
+            </g>
+          </g>
+
+          <text x="480" y="80" text-anchor="middle" fill="#94a3b8" font-size="13" font-weight="700" letter-spacing="0.1em" font-family="system-ui">CONTROL FLOW ARCHITECTURE</text>
+        </svg>
+      </div>
+    </div>
+
+    <!-- SLIDE 8: Ticket Lifecycle -->
+    <div class="slide">
+      <div class="slide-header-title">ticket lifecycle</div>
+      <div class="slide-svg-wrap">
+        <svg viewBox="0 0 960 440" width="100%" height="420" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <!-- 5 Lifecycle Stations on Pipeline -->
+          <g transform="translate(30, 140)">
+            <path d="M 40 40 L 860 40" stroke="rgba(255, 255, 255, 0.12)" stroke-width="3"/>
+            <path d="M 40 40 L 860 40" stroke="#34d399" stroke-width="3" stroke-dasharray="14 20" class="dash-flow-fast"/>
+
+            <!-- Station 1: Submit -->
+            <g transform="translate(10, 0)" class="anim-pulse-subtle">
+              <rect x="0" y="0" width="140" height="80" rx="12" fill="rgba(56, 189, 248, 0.08)" stroke="#38bdf8" stroke-width="1.8"/>
+              <text x="16" y="28" fill="#38bdf8" font-size="10" font-weight="800" font-family="system-ui">REQUESTER</text>
+              <text x="16" y="48" fill="#ffffff" font-size="13" font-weight="700" font-family="system-ui">submit</text>
+              <text x="16" y="65" fill="#38bdf8" font-size="10" font-family="monospace">PENDING</text>
+            </g>
+
+            <!-- Station 2: Queue -->
+            <g transform="translate(190, 0)" class="anim-pulse-subtle" style="animation-delay: 0.2s;">
+              <rect x="0" y="0" width="140" height="80" rx="12" fill="rgba(129, 140, 248, 0.08)" stroke="#818cf8" stroke-width="1.8"/>
+              <text x="16" y="28" fill="#818cf8" font-size="10" font-weight="800" font-family="system-ui">FIFO QUEUE</text>
+              <text x="16" y="48" fill="#ffffff" font-size="13" font-weight="700" font-family="system-ui">ordered wait</text>
+              <text x="16" y="65" fill="#818cf8" font-size="10" font-family="monospace">QUEUE TAIL</text>
+            </g>
+
+            <!-- Station 3: Assign -->
+            <g transform="translate(370, 0)" class="anim-pulse-subtle" style="animation-delay: 0.4s;">
+              <rect x="0" y="0" width="140" height="80" rx="12" fill="rgba(251, 191, 36, 0.08)" stroke="#fbbf24" stroke-width="1.8"/>
+              <text x="16" y="28" fill="#fbbf24" font-size="10" font-weight="800" font-family="system-ui">MANAGER</text>
+              <text x="16" y="48" fill="#ffffff" font-size="13" font-weight="700" font-family="system-ui">assign tech</text>
+              <text x="16" y="65" fill="#fbbf24" font-size="10" font-family="monospace">IN_PROGRESS</text>
+            </g>
+
+            <!-- Station 4: Repair -->
+            <g transform="translate(550, 0)" class="anim-pulse-subtle" style="animation-delay: 0.6s;">
+              <rect x="0" y="0" width="140" height="80" rx="12" fill="rgba(52, 211, 153, 0.08)" stroke="#34d399" stroke-width="1.8"/>
+              <text x="16" y="28" fill="#34d399" font-size="10" font-weight="800" font-family="system-ui">TECHNICIAN</text>
+              <text x="16" y="48" fill="#ffffff" font-size="13" font-weight="700" font-family="system-ui">repair &amp; notes</text>
+              <text x="16" y="65" fill="#34d399" font-size="10" font-family="monospace">COMPLETED</text>
+            </g>
+
+            <!-- Station 5: History -->
+            <g transform="translate(730, 0)" class="anim-pulse-subtle" style="animation-delay: 0.8s;">
+              <rect x="0" y="0" width="140" height="80" rx="12" fill="rgba(56, 189, 248, 0.08)" stroke="#38bdf8" stroke-width="1.8"/>
+              <text x="16" y="28" fill="#38bdf8" font-size="10" font-weight="800" font-family="system-ui">AUDIT TRAIL</text>
+              <text x="16" y="48" fill="#ffffff" font-size="13" font-weight="700" font-family="system-ui">logged</text>
+              <text x="16" y="65" fill="#38bdf8" font-size="10" font-family="monospace">CHANGELOG</text>
+            </g>
+          </g>
+
+          <text x="480" y="80" text-anchor="middle" fill="#94a3b8" font-size="13" font-weight="700" letter-spacing="0.1em" font-family="system-ui">MAINTENANCE PIPELINE WORKFLOW</text>
+        </svg>
+      </div>
+    </div>
+
+    <!-- SLIDE 9: Summary -->
+    <div class="slide">
+      <div class="slide-header-title">project summary</div>
+      <div class="slide-svg-wrap">
+        <svg viewBox="0 0 960 440" width="100%" height="420" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <!-- Pillar 1: Data Structures -->
+          <g transform="translate(60, 60)" class="anim-float">
+            <rect x="0" y="0" width="240" height="240" rx="18" fill="rgba(56, 189, 248, 0.06)" stroke="#38bdf8" stroke-width="2"/>
+            <circle cx="120" cy="80" r="36" fill="rgba(56, 189, 248, 0.12)" stroke="#38bdf8" stroke-width="2"/>
+            <text x="120" y="88" text-anchor="middle" fill="#38bdf8" font-size="28" font-family="monospace">⚡</text>
+            <text x="120" y="150" text-anchor="middle" fill="#ffffff" font-size="16" font-weight="800" font-family="system-ui">data structures</text>
+            <text x="120" y="175" text-anchor="middle" fill="#38bdf8" font-size="12" font-weight="700" font-family="system-ui">ZERO STL CONTAINERS</text>
+            <text x="120" y="200" text-anchor="middle" fill="#94a3b8" font-size="11" font-family="system-ui">Queue &amp; 5 Linked Lists</text>
+          </g>
+
+          <!-- Pillar 2: OOP Architecture -->
+          <g transform="translate(360, 60)" class="anim-float-reverse">
+            <rect x="0" y="0" width="240" height="240" rx="18" fill="rgba(129, 140, 248, 0.06)" stroke="#818cf8" stroke-width="2"/>
+            <circle cx="120" cy="80" r="36" fill="rgba(129, 140, 248, 0.12)" stroke="#818cf8" stroke-width="2"/>
+            <text x="120" y="88" text-anchor="middle" fill="#818cf8" font-size="28" font-family="monospace">❖</text>
+            <text x="120" y="150" text-anchor="middle" fill="#ffffff" font-size="16" font-weight="800" font-family="system-ui">oop architecture</text>
+            <text x="120" y="175" text-anchor="middle" fill="#818cf8" font-size="12" font-weight="700" font-family="system-ui">INHERITANCE &amp; POLY</text>
+            <text x="120" y="200" text-anchor="middle" fill="#94a3b8" font-size="11" font-family="system-ui">Person Base &amp; 3 Roles</text>
+          </g>
+
+          <!-- Pillar 3: System Reliability -->
+          <g transform="translate(660, 60)" class="anim-float">
+            <rect x="0" y="0" width="240" height="240" rx="18" fill="rgba(52, 211, 153, 0.06)" stroke="#34d399" stroke-width="2"/>
+            <circle cx="120" cy="80" r="36" fill="rgba(52, 211, 153, 0.12)" stroke="#34d399" stroke-width="2"/>
+            <text x="120" y="88" text-anchor="middle" fill="#34d399" font-size="28" font-family="monospace">✓</text>
+            <text x="120" y="150" text-anchor="middle" fill="#ffffff" font-size="16" font-weight="800" font-family="system-ui">reliability</text>
+            <text x="120" y="175" text-anchor="middle" fill="#34d399" font-size="12" font-weight="700" font-family="system-ui">100% TEST PASS</text>
+            <text x="120" y="200" text-anchor="middle" fill="#94a3b8" font-size="11" font-family="system-ui">34 Automated Test Cases</text>
+          </g>
+        </svg>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Faint, minimal slide indicator -->
+  <div class="slide-indicator" id="slideIndicator">01 / 09</div>
+
+  <script>
+    const slides = document.querySelectorAll('.slide');
+    const totalSlides = slides.length;
+    let currentSlide = 0;
+    const indicator = document.getElementById('slideIndicator');
+
+    function showSlide(index) {
+      if (index < 0 || index >= totalSlides) return;
+      slides[currentSlide].classList.remove('active');
+      currentSlide = index;
+      slides[currentSlide].classList.add('active');
+
+      const padCurrent = String(currentSlide + 1).padStart(2, '0');
+      const padTotal = String(totalSlides).padStart(2, '0');
+      indicator.textContent = `${padCurrent} / ${padTotal}`;
+    }
+
+    function nextSlide() {
+      if (currentSlide < totalSlides - 1) showSlide(currentSlide + 1);
+    }
+
+    function prevSlide() {
+      if (currentSlide > 0) showSlide(currentSlide - 1);
+    }
+
+    // Keyboard navigation
+    document.addEventListener('keydown', (e) => {
+      switch (e.key) {
+        case 'ArrowRight':
+        case ' ':
+        case 'PageDown':
+          e.preventDefault();
+          nextSlide();
+          break;
+        case 'ArrowLeft':
+        case 'Backspace':
+        case 'PageUp':
+          e.preventDefault();
+          prevSlide();
+          break;
+        case 'Home':
+          e.preventDefault();
+          showSlide(0);
+          break;
+        case 'End':
+          e.preventDefault();
+          showSlide(totalSlides - 1);
+          break;
+        case 'f':
+        case 'F':
+          if (!document.fullscreenElement) {
+            document.documentElement.requestFullscreen().catch(() => {});
+          } else {
+            document.exitFullscreen().catch(() => {});
+          }
+          break;
+      }
+    });
+
+    // Click anywhere on right half to advance, left half to go back
+    document.addEventListener('click', (e) => {
+      if (e.clientX > window.innerWidth / 2) {
+        nextSlide();
+      } else {
+        prevSlide();
+      }
+    });
+
+    const urlParams = new URLSearchParams(window.location.search);
+    const paramSlide = parseInt(urlParams.get('slide') || '0', 10);
+    const initialSlide = (paramSlide > 0 && paramSlide <= totalSlides) ? paramSlide - 1 : 0;
+    showSlide(initialSlide);
+  </script>
+</body>
+</html>
