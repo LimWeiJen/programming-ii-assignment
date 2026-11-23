@@ -4,9 +4,11 @@
 #include "LinkedList.h"
 #include "../../classes/person/technician/Technician.h"
 
-class TechnicianNode
+struct TechnicianNode
 {
-public:
+	Technician data;
+	TechnicianNode* next;
+
 	TechnicianNode(const Technician& tech);
 	~TechnicianNode();
 
@@ -14,10 +16,6 @@ public:
 	const Technician* getData() const;
 	TechnicianNode* getNext() const;
 	void setNext(TechnicianNode* nextNode);
-
-private:
-	Technician data;
-	TechnicianNode* next;
 };
 
 class TechnicianLinkedList : public LinkedList

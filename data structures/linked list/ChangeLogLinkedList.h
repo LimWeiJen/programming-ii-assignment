@@ -4,9 +4,11 @@
 #include "LinkedList.h"
 #include "changelog/ChangeLog.h"
 
-class ChangeLogNode
+struct ChangeLogNode
 {
-public:
+	ChangeLog* data;
+	ChangeLogNode* next;
+
 	ChangeLogNode(ChangeLog* log);
 	~ChangeLogNode();
 
@@ -14,10 +16,6 @@ public:
 	const ChangeLog* getData() const;
 	ChangeLogNode* getNext() const;
 	void setNext(ChangeLogNode* nextNode);
-
-private:
-	ChangeLog* data;
-	ChangeLogNode* next;
 };
 
 class ChangeLogLinkedList : public LinkedList

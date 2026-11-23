@@ -3,18 +3,17 @@
 
 #include "../../../classes/request/Request.h"
 
-class QueueNode
+struct QueueNode
 {
-public:
+	Request* val;
+	QueueNode* next;
+
 	QueueNode(Request* val);
 
 	Request* getVal();
 	QueueNode* getNext();
 	void updateVal(Request* val);
 	void updateNext(QueueNode* next);
-private:
-	QueueNode* next;
-	Request* val;
 };
 
 #endif

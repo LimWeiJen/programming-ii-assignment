@@ -13,3 +13,6 @@ bool LinkedList::empty() const
 {
 	return listSize == 0;
 }
+
+void LinkedList::clear() {}
+

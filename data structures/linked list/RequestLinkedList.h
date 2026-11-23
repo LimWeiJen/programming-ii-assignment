@@ -4,9 +4,11 @@
 #include "LinkedList.h"
 #include "../../classes/request/Request.h"
 
-class RequestNode
+struct RequestNode
 {
-public:
+	Request data;
+	RequestNode* next;
+
 	RequestNode(const Request& req);
 	~RequestNode();
 
@@ -14,10 +16,6 @@ public:
 	const Request* getData() const;
 	RequestNode* getNext() const;
 	void setNext(RequestNode* nextNode);
-
-private:
-	Request data;
-	RequestNode* next;
 };
 
 class RequestLinkedList : public LinkedList

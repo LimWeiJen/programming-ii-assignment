@@ -1,7 +1,7 @@
 #include "QueueNode.h"
 #include "../../../classes/request/Request.h"
 
-QueueNode::QueueNode(Request* val): val(val) {}
+QueueNode::QueueNode(Request* val) : val(val), next(nullptr) {}
 
 Request* QueueNode::getVal()
 {

@@ -30,7 +30,7 @@ The third challenge is permanent storage. This is because this knowledge is not 
 
 ---
 
-Lim Wei Jen: I am the leader of this project, I basically outlined all the file structures and created all the necessary header files. I also implemented the main function, which creates the main software loop.
+Lim Wei Jen: I outlined all the file structures and created all the necessary header files. I also implemented the main function, which creates the main software loop.
 
 Joo Eu-Jin: I am in charge of implementing the sub functions of each class (except for data storage), including the ones in data structures to make sure that all of them can work correctly without failure.
 

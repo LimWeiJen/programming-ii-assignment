@@ -6,9 +6,11 @@
 
 using namespace std;
 
-class StringNode
+struct StringNode
 {
-public:
+	string data;
+	StringNode* next;
+
 	StringNode(const string& str);
 	~StringNode();
 
@@ -16,10 +18,6 @@ public:
 	const string& getData() const;
 	StringNode* getNext() const;
 	void setNext(StringNode* nextNode);
-
-private:
-	string data;
-	StringNode* next;
 };
 
 class StringLinkedList : public LinkedList
